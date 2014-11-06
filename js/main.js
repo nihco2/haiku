@@ -38,9 +38,30 @@ function handleComplete() {
 
 function listentouchEvents() {
   var element = document.getElementById('haiku');
-  element.addEventListener("touchmove", touchMove, false);
+  var mc = new Hammer(element);
+  mc.on("panup", handlePanUp);
+  mc.on("pandown", handlePanDown);
+  //element.addEventListener("touchmove", touchMove, false);
   element.addEventListener("touchstart", touchStart, false);
   element.addEventListener("touchend", touchEnd, false);
+}
+
+function handlePanUp(event) {
+  console.log(event);
+  if (container.y >= 0 && container.y < canvasHeight) {
+    Tween.get(container).to({
+      y: (container.y + 10)
+    }, 0, Ease.cubicOut);
+  }
+}
+
+function handlePanDown(event) {
+  console.log(event);
+  if (container.y >= 0 && container.y < canvasHeight) {
+    Tween.get(container).to({
+      y: (container.y - 10)
+    }, 0, Ease.cubicOut);
+  }
 }
 
 function touchMove(event) {
