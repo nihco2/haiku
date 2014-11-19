@@ -44,7 +44,4 @@ textarea {
 #wrapper {
   width: 100%;
   height: 100%;
-  max-width: 384px;
-  max-height: 640px;
-  margin: 0 auto;
 }
