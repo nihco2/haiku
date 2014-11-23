@@ -1,4 +1,4 @@
-var stage, canvas, queue, container, ratio, ctx, bkgHeight, timer, flakes = [];
+var stage, canvas, queue, container, ratioP, ratioL, ctx, bkgHeight, timer, flakes = [];
 
 var PAS = 7;
 
@@ -31,7 +31,7 @@ var assets = [{
   destX: 300
 }];
 
-var isPortrait = function() {
+var isPortrait = function () {
   if (window.innerHeight > window.innerWidth) {
     return true;
   } else {
@@ -39,7 +39,7 @@ var isPortrait = function() {
   }
 }
 
-var isMobile = function() {
+var isMobile = function () {
   return (/Mobile|Android|iPhone|iPod|BlackBerry|Windows Phone/i).test(navigator.userAgent || navigator.vendor || window.opera) ? true : false;
 }
 
@@ -88,24 +88,29 @@ function initSize() {
   container = new createjs.Container();
   container.addChild(bitmap);
 
-  if (isMobile()) {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  resize();
+
+  if (isPortrait()) {
+    ratioP = canvas.width / container.getBounds().width;
+    ratioL = canvas.height / container.getBounds().width;
+    container.scaleX = ratioP;
+    container.scaleY = ratioP;
+    container.y = -container.getBounds().height * ratioP + canvas.height + PAS;
+  } else {
+    ratioL = canvas.width / container.getBounds().width;
+    ratioP = canvas.height / container.getBounds().width;
+    container.scaleX = ratioL;
+    container.scaleY = ratioL;
+    container.y = -container.getBounds().height * ratioL + canvas.height + PAS;
   }
 
-  ratio = canvas.width / container.getBounds().width;
-
-  container.scaleX = ratio;
-  container.scaleY = ratio;
-
-  container.y = -container.getBounds().height * ratio + canvas.height + PAS;
-  bkgHeight = -container.getBounds().height * ratio + canvas.height + PAS;
+  bkgHeight = -container.getBounds().height * ratioP + canvas.height + PAS;
 }
 
 function initAssets() {
   var mountain = new createjs.Bitmap(queue.getResult('mountain'));
   var tree = new createjs.Bitmap(queue.getResult('tree'));
-  assets.forEach(function(asset, index) {
+  assets.forEach(function (asset, index) {
     var item;
     if (asset.type === 'mountain') {
       item = mountain.clone();
@@ -129,12 +134,20 @@ function listentouchEvents() {
 }
 
 function resize() {
-  if (isMobile() && !isPortrait()) {
-    document.body.classList.add('rotate');
-  }
-
-  if (isMobile() && isPortrait()) {
-    document.body.classList.remove('rotate');
+  if (isMobile()) {
+    $('#wrapper').width(window.innerWidth);
+    $('#wrapper').height(window.innerHeight);
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    if (isPortrait()) {
+      container.scaleX = ratioP;
+      container.scaleY = ratioP;
+      container.y = -container.getBounds().height * ratioP + canvas.height + PAS;
+    } else {
+      container.scaleX = ratioL;
+      container.scaleY = ratioL;
+      container.y = -container.getBounds().height * ratioL + canvas.height + PAS;
+    }
   }
 
 }
