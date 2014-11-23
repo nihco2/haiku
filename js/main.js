@@ -9,13 +9,9 @@ var FLAKES_NUMBER = 100;
 var FLAKES_TIME_CHANGE_DIRECTION = 20000; //miliseconds
 
 var SNOW_COLOR = {
-
   red: 255,
-
   green: 255,
-
   blue: 255
-
 }
 
 var assets = [{
@@ -36,17 +32,11 @@ var assets = [{
 }];
 
 var isPortrait = function() {
-
   if (window.innerHeight > window.innerWidth) {
-
     return true;
-
   } else {
-
     return false;
-
   }
-
 }
 
 var isMobile = function() {
@@ -60,6 +50,10 @@ function init() {
   createjs.Touch.enable(stage);
   preloadAssets();
   listentouchEvents();
+  if (isMobile()) {
+    $('#wrapper').width(window.innerWidth);
+    $('#wrapper').height(window.innerHeight);
+  }
 }
 
 function preloadAssets() {
@@ -78,11 +72,11 @@ function preloadAssets() {
 }
 
 function handleComplete() {
+  $('.loader').remove();
   initSize();
   initAssets();
   stage.addChild(container);
   window.addEventListener('resize', resize, false);
-  window.addEventListener("deviceorientation", handleOrientation, true);
   timer = setInterval(changeMovement, FLAKES_TIME_CHANGE_DIRECTION);
   initSnowFlakes(SNOW_SPEED, FLAKES_NUMBER);
   createjs.Ticker.addEventListener("tick", tick);
@@ -93,10 +87,20 @@ function initSize() {
   var bitmap = new createjs.Bitmap(bkg);
   container = new createjs.Container();
   container.addChild(bitmap);
-  resize();
+
+  if (isMobile()) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  ratio = canvas.width / container.getBounds().width;
+
+  container.scaleX = ratio;
+  container.scaleY = ratio;
+
+  container.y = -container.getBounds().height * ratio + canvas.height + PAS;
+  bkgHeight = -container.getBounds().height * ratio + canvas.height + PAS;
 }
-
-
 
 function initAssets() {
   var mountain = new createjs.Bitmap(queue.getResult('mountain'));
@@ -124,51 +128,18 @@ function listentouchEvents() {
   mc.on("pandown", handlePanDown);
 }
 
-
-
-function handleOrientation(event) {
-  if (event.orientation == 'landscape') {
-    if (window.rotation == 90) {
-      rotate(this, -90);
-    } else {
-      rotate(this, 90);
-    }
-  }
-}
-
 function resize() {
-  rotate();
-  canvas.width = container.getBounds().width;
-  canvas.height = window.innerHeight;
-  if (window.innerWidth < canvas.width) {
-    ratio = window.innerWidth / canvas.width;
-  } else {
-    ratio = 1;
-  }
-  container.scaleX = ratio;
-  container.scaleY = ratio;
-  container.y = -container.getBounds().height * ratio + canvas.height + PAS;
-  bkgHeight = -container.getBounds().height * ratio + canvas.height + PAS;
-}
-
-function rotate() {
   if (isMobile() && !isPortrait()) {
-    console.log('Landscape');
     document.body.classList.add('rotate');
-    /*document.getElementsByTagName('html')[0].style.height = window.innerHeight + 'px';
-    document.body.style.height = window.innerHeight + 'px';*/
   }
 
   if (isMobile() && isPortrait()) {
-    console.log('Portrait');
     document.body.classList.remove('rotate');
-    /*document.getElementsByTagName('html')[0].style.height = 'auto';
-    document.body.style.height = 'auto';*/
   }
+
 }
 
 function handlePanUp(event) {
-  console.log(container.y, bkgHeight);
   if (container.y >= bkgHeight) {
     Tween.get(container).to({
       y: (container.y - PAS)
@@ -180,7 +151,6 @@ function handlePanUp(event) {
 }
 
 function handlePanDown(event) {
-  console.log(container.y, bkgHeight);
   if (container.y <= 0) {
     Tween.get(container).to({
       y: (container.y + PAS)
@@ -212,9 +182,6 @@ function initSnowFlakes(speed, flakesNumber) {
   for (var i = 0; i < flakesNumber; i++) {
     var g = new createjs.Graphics();
     var flake = new createjs.Shape(g);
-    //bordure neige
-    /*g.setStrokeStyle(1);
-    g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));*/
     g.beginFill(createjs.Graphics.getRGB(SNOW_COLOR.red, SNOW_COLOR.green, SNOW_COLOR.blue));
     g.drawCircle(0, 0, 3);
     flake.vel = (Math.random() * speed) + 0.5;
