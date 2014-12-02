@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0,minimal-ui">
+  <link rel="stylesheet" href="css/normalize.min.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <!--[if lt IE 9]>
+            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+            <script>window.html5 || document.write('<script src="js/vendor/html5shiv.js"><\/script>')</script>
+        <![endif]-->
+</head>
+
+<body onload="init()">
+  <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+  <header>
+    <div class="social"></div>
+    <div class="logo"></div>
+    <div class="loader">Loading...</div>
+    <a class="btn-start js-btn-start"></a>
+  </header>
+  <section id="wrapper">
+    <canvas id="haiku"></canvas>
+  </section>
+  <script>
+  var createjs = window;
+  window.jQuery || document.write('<script src="js/vendor/jquery-1.11.1.min.js"><\/script>')
+  </script>
+  <script src="js/vendor/preloadjs-0.4.1.min.js"></script>
+  <script src="js/vendor/easeljs-0.7.1.min.js"></script>
+  <script src="js/vendor/tweenjs-0.5.1.min.js"></script>
+  <script src="js/vendor/hammer.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
