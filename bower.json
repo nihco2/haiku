@@ -1,0 +1,21 @@
+{
+  "name": "haiku",
+  "version": "0.0.0",
+  "homepage": "https://github.com/nihco2/haiku",
+  "authors": [
+    "Nicolas Martin <nihco2@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "EaselJS": "*",
+    "react": "~0.12.1"
+  }
+}
