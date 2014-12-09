@@ -17,6 +17,14 @@ var assets = [{
   posY: 1050,
   destX: 300
 }];
+var texts = [{
+  haiku: 'HAIKU\nCeci est un haiku: cool!',
+  position: 14650
+}, {
+  haiku: 'HAIKU\nCeci est un haiku: cool!',
+  position: 9750
+}];
+
 var Haiku = React.createClass({
   container: new createjs.Container(),
   queue: new createjs.LoadQueue(),
@@ -28,7 +36,7 @@ var Haiku = React.createClass({
   collection: [],
   num: 0,
   it: 0,
-  FOOTSTEPS: 50,
+  FOOTSTEPS: 250,
   SCROLL_VELOCITY: 55,
   ASSET_MOVEMENT: 3,
   RUN_LIMIT: 1000,
@@ -59,14 +67,11 @@ var Haiku = React.createClass({
     createjs.Sound.alternateExtensions = ["mp3"];
     this.queue.installPlugin(createjs.Sound);
     this.queue.loadManifest([{
-      id: "bkg",
-      src: "assets/background.jpg"
-    }, {
       id: "spring",
       src: "assets/bg_printemps.jpg"
     }, {
       id: "winter",
-      src: "assets/bg_hiver.jpg"
+      src: "assets/background.jpg"
     }, {
       id: "autumn",
       src: "assets/bg_automne.jpg"
@@ -98,22 +103,24 @@ var Haiku = React.createClass({
     this.initSize();
     this.initAssets();
     this.initListeners();
+    this.initWalk();
+    this.initTexts();
     this.initSnowFlakes(this.SNOW_SPEED, this.FLAKES_NUMBER);
   },
   initSeasons: function() {
     var seasons = [],
       self = this;
-    seasons[0] = self.queue.getResult('winter'),
-    seasons[1] = self.queue.getResult('summer'),
+    seasons[0] = self.queue.getResult('spring'),
+    seasons[1] = self.queue.getResult('winter'),
     seasons[2] = self.queue.getResult('autumn'),
-    seasons[3] = self.queue.getResult('spring');
+    seasons[3] = self.queue.getResult('summer');
     seasons.forEach(function(season, index) {
       var bitmap = new createjs.Bitmap(season);
-      self.container.addChild(bitmap);
-      (index > 0) ? bitmap.y = self.container.getBounds().height : bitmap.y = 0;
+      var bitmapContainer = new createjs.Container();
+      bitmapContainer.addChild(bitmap);
+      self.container.addChild(bitmapContainer);
+      (index > 0) ? bitmapContainer.y = self.container.getBounds().height : bitmapContainer.y = 0;
     })
-    bitmap = new createjs.Bitmap(self.queue.getResult('bkg'));
-    self.container.addChild(bitmap);
     self.stage.addChild(this.container);
   },
   initSize: function() {
@@ -131,8 +138,8 @@ var Haiku = React.createClass({
   initAssets: function() {
     var mountain = new createjs.Bitmap(this.queue.getResult('mountain'));
     var tree = new createjs.Bitmap(this.queue.getResult('tree'));
-    var footstep = new createjs.Bitmap(this.queue.getResult('footstep'));
     var self = this;
+
     assets.forEach(function(asset, index) {
       var item;
       if (asset.type === 'mountain') {
@@ -157,13 +164,6 @@ var Haiku = React.createClass({
       self.collection.push(item);
       self.container.addChild(item);
     });
-
-    footstep.y = this.bkgHeight - footstep.getBounds().height;
-
-    footstep.x = this.stage.canvas.width / 2 - footstep.getBounds().width;
-
-    this.container.addChild(footstep);
-    this.initWalk(footstep);
   },
   resize: function() {
     if (this.isMobile()) {
@@ -172,8 +172,15 @@ var Haiku = React.createClass({
     }
   },
 
-  initWalk: function(footstep) {
-    var footPosX = this.stage.canvas.width / 2 - footstep.getBounds().width;
+  initWalk: function() {
+    var footstep = new createjs.Bitmap(this.queue.getResult('footstep')),
+      footPosX = this.stage.canvas.width / 2 - footstep.getBounds().width;
+
+    this.container.addChild(footstep);
+
+    footstep.y = this.bkgHeight - footstep.getBounds().height;
+    footstep.x = this.stage.canvas.width / 2 - footstep.getBounds().width;
+
     for (var i = 0; i < this.FOOTSTEPS; i++) {
       var footstepClone = footstep.clone();
       lastFootStepIndex = this.container.getNumChildren() - 1;
@@ -224,6 +231,22 @@ var Haiku = React.createClass({
     this.stage.canvas.addEventListener("touchend", this.handleEnd, false);
     window.addEventListener('resize', this.resize, false);
     createjs.Ticker.addEventListener("tick", this.tick);
+  },
+  initTexts: function() {
+    var self = this;
+
+    texts.forEach(function(item) {
+      var txt = new createjs.Text();
+      txt.font = "35px Coustard";
+      txt.color = "#000000";
+      txt.text = item.haiku;
+      txt.textAlign = 'center';
+      txt.y = item.position;
+      txt.lineWidth = self.stage.canvas.width;
+      var b = txt.getBounds();
+      txt.x = self.stage.canvas.width / 2;
+      self.container.addChild(txt);
+    })
   },
   handleEnd: function() {
     if (this.container.y < this.scrollHeight + this.num) {
