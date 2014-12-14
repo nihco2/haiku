@@ -1,10 +1,4 @@
 var assets = [{
-  type: 'tree',
-  name: 'tree1',
-  comeFrom: 'right',
-  posY: 2000,
-  destX: 500
-}, {
   type: 'mountain',
   name: 'mountain1',
   comeFrom: 'left',
@@ -34,9 +28,10 @@ var Haiku = React.createClass({
   gameEnabled: true,
   flakes: [],
   collection: [],
+  seasons: {},
   num: 0,
   it: 0,
-  FOOTSTEPS: 250,
+  FOOTSTEPS: 60,
   SCROLL_VELOCITY: 55,
   ASSET_MOVEMENT: 3,
   RUN_LIMIT: 1000,
@@ -63,6 +58,9 @@ var Haiku = React.createClass({
   isOnScreen: function(el) {
     return (el.y >= -this.container.y - window.innerHeight - el.getBounds().height / 2);
   },
+  checkSeason: function(season) {
+    return (this.container.y >= -(season.y + season.getBounds().height) && this.container.y <= -season.y);
+  },
   preloadAssets: function() {
     createjs.Sound.alternateExtensions = ["mp3"];
     this.queue.installPlugin(createjs.Sound);
@@ -85,13 +83,16 @@ var Haiku = React.createClass({
       id: "footstep",
       src: "assets/step.png",
     }, {
-      id: "tree",
-      src: "assets/arbre.png",
+      id: "fingers",
+      src: "assets/fingers.png",
     }], true);
 
     this.queue.loadFile({
       id: "wind",
       src: "assets/wind.mp3"
+    }, {
+      id: 'fingersSpriteSheet',
+      src: 'assets/fingers.json'
     });
     this.queue.on("complete", this.handleComplete);
 
@@ -109,18 +110,30 @@ var Haiku = React.createClass({
   },
   initSeasons: function() {
     var seasons = [],
+      fingersSpriteSheet = new createjs.SpriteSheet(this.queue.getResult('fingersSpriteSheet')),
       self = this;
+    console.log(fingersSpriteSheet);
     seasons[0] = self.queue.getResult('spring'),
+    seasons[0]['name'] = 'spring';
     seasons[1] = self.queue.getResult('winter'),
+    seasons[1]['name'] = 'winter',
     seasons[2] = self.queue.getResult('autumn'),
-    seasons[3] = self.queue.getResult('summer');
+    seasons[2]['name'] = 'autumn',
+    seasons[3] = self.queue.getResult('summer'),
+    seasons[3]['name'] = 'summer';
     seasons.forEach(function(season, index) {
       var bitmap = new createjs.Bitmap(season);
       var bitmapContainer = new createjs.Container();
+      bitmapContainer.name = season.name;
       bitmapContainer.addChild(bitmap);
       self.container.addChild(bitmapContainer);
+      self.seasons[season.name] = bitmapContainer;
+      if (season.name === 'summer') {
+        //self.seasons.summer.addChild(fingers);
+      }
       (index > 0) ? bitmapContainer.y = self.container.getBounds().height : bitmapContainer.y = 0;
     })
+
     self.stage.addChild(this.container);
   },
   initSize: function() {
@@ -144,11 +157,6 @@ var Haiku = React.createClass({
       var item;
       if (asset.type === 'mountain') {
         item = mountain.clone();
-      }
-      if (asset.type === 'tree') {
-        item = tree.clone();
-        item.scaleX = item.scaleY = 1.5;
-        item.visible = false;
       }
       if (asset.comeFrom === 'right') {
         item.x = self.stage.canvas.width;
@@ -174,28 +182,30 @@ var Haiku = React.createClass({
 
   initWalk: function() {
     var footstep = new createjs.Bitmap(this.queue.getResult('footstep')),
+      winter = this.container.getChildByName('winter'),
       footPosX = this.stage.canvas.width / 2 - footstep.getBounds().width;
 
-    this.container.addChild(footstep);
+    winter.addChild(footstep);
 
-    footstep.y = this.bkgHeight - footstep.getBounds().height;
+    footstep.y = winter.getBounds().height - footstep.getBounds().height;
     footstep.x = this.stage.canvas.width / 2 - footstep.getBounds().width;
 
     for (var i = 0; i < this.FOOTSTEPS; i++) {
       var footstepClone = footstep.clone();
-      lastFootStepIndex = this.container.getNumChildren() - 1;
-      footstepClone.y = this.container.getChildAt(lastFootStepIndex).y - footstep.getBounds().height * 2;
+      lastFootStepIndex = winter.getNumChildren() - 1;
+      footstepClone.y = winter.getChildAt(lastFootStepIndex).y - footstep.getBounds().height * 2;
 
       if (i % 2 === 0) {
         footstepClone.x = footPosX + (2 * footstep.getBounds().width);
       }
       footstepClone.name = 'footstep' + i;
-      this.container.addChild(footstepClone);
+      winter.addChild(footstepClone);
       footstepClone.visible = false;
     }
   },
   initSnowFlakes: function(speed, flakesNumber) {
-    var timer = setInterval(this.changeMovement, this.FLAKES_TIME_CHANGE_DIRECTION);
+    var timer = setInterval(this.changeMovement, this.FLAKES_TIME_CHANGE_DIRECTION),
+      winter = this.container.getChildByName('winter');
     for (var i = 0; i < flakesNumber; i++) {
       var g = new createjs.Graphics();
       var flake = new createjs.Shape(g);
@@ -206,8 +216,8 @@ var Haiku = React.createClass({
       flake.scaleX = (Math.random() * 1) + 0.3;
       flake.scaleY = flake.scaleX;
       flake.x = Math.random() * this.stage.canvas.width;
-      flake.y = Math.random() * this.stage.canvas.height;
-      this.stage.addChild(flake);
+      flake.y = Math.random() * winter.getBounds().height;
+      winter.addChild(flake);
       this.flakes.push(flake);
     }
   },
@@ -275,12 +285,12 @@ var Haiku = React.createClass({
   },
   handlePanDown: function(event) {
     this.num = (event.distance * (this.bkgHeight - this.stage.canvas.height) / this.stage.canvas.height) / this.SCROLL_VELOCITY;
-    if (event.distance > this.RUN_LIMIT && this.gameEnabled) {
+    /*if (event.distance > this.RUN_LIMIT && this.gameEnabled) {
       this.disablePan();
       this.scrollToBottom();
       this.gameEnabled = false;
       return alert('Rien ne sert de courir petit scarabée !');
-    }
+    }*/
 
     if (this.container.y <= -this.num && this.container.y >= this.scrollHeight) {
       Tween.get(this.container).to({
@@ -289,7 +299,10 @@ var Haiku = React.createClass({
     }
 
     this.moveAssets('up');
-    this.walking();
+    console.log(this.container.localToGlobal(this.seasons.winter.x, this.seasons.winter.y))
+    if (this.checkSeason(this.seasons.winter)) {
+      this.walking();
+    }
   },
   handlePanUp: function(event) {
     this.num = (event.distance * (this.bkgHeight - this.stage.canvas.height) / this.stage.canvas.height) / this.SCROLL_VELOCITY;
@@ -344,10 +357,16 @@ var Haiku = React.createClass({
     }
   },
   walking: function() {
-    var lastFootStep = this.container.getChildByName('footstep' + this.it);
-    if (lastFootStep && (lastFootStep.y + this.container.y) > (this.stage.canvas.height / 2 - lastFootStep.getBounds().height)) {
-      this.it++;
-      lastFootStep.visible = true;
+    var lastFootStep = this.seasons.winter.getChildByName('footstep' + this.it);
+    //(lastFootStep.y + this.container.y) > (this.stage.canvas.height / 2 - lastFootStep.getBounds().height)
+    //console.log(lastFootStep.y, this.container.y, this.container.y + winter.y + winter.getBounds().height)
+    //console.log(lastFootStep.y + this.container.y, -this.stage.canvas.height / 2 - this.bkgHeight + winter.getBounds().height);
+
+    if (lastFootStep) {
+      if (lastFootStep.y + this.container.y > this.stage.canvas.height / 2 - this.bkgHeight + this.seasons.summer.getBounds().height + this.seasons.autumn.getBounds().height + this.seasons.winter.getBounds().height) {
+        this.it++;
+        lastFootStep.visible = true;
+      }
     }
   },
   tick: function() {
@@ -363,9 +382,9 @@ var Haiku = React.createClass({
     for (var i = 0; i < this.flakes.length; i++) {
       this.flakes[i].x += this.flakes[i].xSpeed;
       this.flakes[i].y += this.flakes[i].vel;
-      if (this.flakes[i].y > this.stage.canvas.height) {
-        this.flakes[i].x = Math.random() * this.stage.getBounds().width;
-        this.flakes[i].y = 0;
+      if (this.flakes[i].y > this.container.getChildByName('winter').getBounds().height) {
+        this.flakes[i].x = Math.random() * this.stage.canvas.width;
+        this.flakes[i].y = this.container.getChildByName('winter').y;
       }
     }
   },
