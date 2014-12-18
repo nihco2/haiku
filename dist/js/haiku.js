@@ -12,11 +12,14 @@ var assets = [{
   destX: 300
 }];
 var texts = [{
-  haiku: 'HAIKU\nCeci est un haiku: cool!',
+  text: 'HAIKU\nCeci est un haiku: cool!',
   position: 14650
 }, {
-  haiku: 'HAIKU\nCeci est un haiku: cool!',
+  text: 'HAIKU\nCeci est un haiku: cool!',
   position: 9750
+}, {
+  text: 'Posez votre téléphone',
+  position: 20000
 }];
 
 var Haiku = React.createClass({
@@ -255,7 +258,7 @@ var Haiku = React.createClass({
       var txt = new createjs.Text();
       txt.font = "35px Coustard";
       txt.color = "#000000";
-      txt.text = item.haiku;
+      txt.text = item.text;
       txt.textAlign = 'center';
       txt.y = item.position;
       txt.lineWidth = self.stage.canvas.width;
