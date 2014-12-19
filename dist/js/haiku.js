@@ -13,13 +13,13 @@ var assets = [{
 }];
 var texts = [{
   text: 'HAIKU\nCeci est un haiku: cool!',
-  position: 14650
+  id:'summer'
 }, {
   text: 'HAIKU\nCeci est un haiku: cool!',
-  position: 9750
+  id:'autumn'
 }, {
   text: 'Posez votre téléphone',
-  position: 20000
+  id:'tuto'
 }];
 
 var Haiku = React.createClass({
@@ -134,11 +134,11 @@ var Haiku = React.createClass({
       self.container.addChild(bitmapContainer);
       self.seasons[season.name] = bitmapContainer;
       if (season.name === 'summer') {
+        var tutoContainer = new createjs.Container();
+        fingersSprite.name='tuto';
         self.seasons.summer.addChild(fingersSprite);
-        console.log(self.seasons.summer.getBounds().height)
         fingersSprite.y = self.seasons.summer.getBounds().height;
         fingersSprite.x = self.stage.canvas.width / 2;
-        //fingersSprite.setBounds(self.seasons.summer.getBounds().width, fingersSprite.getBounds().height)
       }
       (index > 0) ? bitmapContainer.y = self.container.getBounds().height : bitmapContainer.y = 0;
     })
@@ -260,11 +260,17 @@ var Haiku = React.createClass({
       txt.color = "#000000";
       txt.text = item.text;
       txt.textAlign = 'center';
-      txt.y = item.position;
+      //txt.y = item.position;
       txt.lineWidth = self.stage.canvas.width;
       var b = txt.getBounds();
       txt.x = self.stage.canvas.width / 2;
-      self.container.addChild(txt);
+      if(self.seasons[item.id]){
+        self.seasons[item.id].addChild(txt);
+      }
+      else if(item.id==='tuto'){
+        var tuto = self.seasons.summer.getChildByName('tuto');
+        tuto.addChild(item);
+      }
     })
   },
   handleEnd: function() {
