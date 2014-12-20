@@ -13,13 +13,19 @@ var assets = [{
 }];
 var texts = [{
   text: 'HAIKU\nCeci est un haiku: cool!',
-  id:'summer'
+  id: 'summer',
+  typo: '35px Coustard',
+  color: '#000'
 }, {
   text: 'HAIKU\nCeci est un haiku: cool!',
-  id:'autumn'
+  id: 'autumn',
+  typo: '35px Coustard',
+  color: '#000'
 }, {
-  text: 'Posez votre téléphone',
-  id:'tuto'
+  text: 'Posez votre téléphone ou tablette sur une surface plane et utilisez vos deux doigts\npour marcher sur l\'écran et démarrer\nvotre voyage...',
+  id: 'tuto',
+  typo: '30px Coustard',
+  color: '#000'
 }];
 
 var Haiku = React.createClass({
@@ -111,13 +117,19 @@ var Haiku = React.createClass({
     this.initWalk();
     this.initTexts();
     this.initSnowFlakes(this.SNOW_SPEED, this.FLAKES_NUMBER);
+    this.scrollHeight = -this.bkgHeight + this.stage.canvas.height * 2 - 800;
+    this.container.y = this.scrollHeight;
   },
   initSeasons: function() {
     var seasons = [],
       fingersSpriteSheet = new createjs.SpriteSheet(JSON.parse(this.queue.getResult('fingersSpriteSheet'))),
       fingersSprite = new createjs.Sprite(fingersSpriteSheet, 'run'),
+      gradientBkg = new createjs.Shape(),
       self = this;
 
+    gradientBkg.graphics.beginLinearGradientFill(["#fef1e0", "#9cb2d9"], [0, 1], 0, window.innerHeight / 2, 0, window.innerHeight)
+      .drawRect(0, 0, window.innerWidth * 2, window.innerHeight * 2);
+    fingersSprite.name = 'fingersSprite';
     seasons[0] = self.queue.getResult('spring'),
     seasons[0]['name'] = 'spring';
     seasons[1] = self.queue.getResult('winter'),
@@ -135,14 +147,15 @@ var Haiku = React.createClass({
       self.seasons[season.name] = bitmapContainer;
       if (season.name === 'summer') {
         var tutoContainer = new createjs.Container();
-        fingersSprite.name='tuto';
-        self.seasons.summer.addChild(fingersSprite);
-        fingersSprite.y = self.seasons.summer.getBounds().height;
-        fingersSprite.x = self.stage.canvas.width / 2;
+        tutoContainer.addChild(gradientBkg);
+        tutoContainer.name = 'tuto';
+        tutoContainer.addChild(fingersSprite);
+        self.seasons.summer.addChild(tutoContainer);
+        tutoContainer.y = self.seasons.summer.getBounds().height;
       }
-      (index > 0) ? bitmapContainer.y = self.container.getBounds().height : bitmapContainer.y = 0;
+      (index > 0) ? bitmapContainer.y = self.container.getBounds().height : bitmapContainer.y = window.innerHeight;
     })
-
+    self.container.addChild(gradientBkg);
     self.stage.addChild(this.container);
   },
   initSize: function() {
@@ -151,11 +164,10 @@ var Haiku = React.createClass({
     this.stage.canvas.height = window.innerHeight * 2;
 
     var ratio = this.stage.canvas.height / this.stage.canvas.width;
-    this.bkgHeight = this.container.getBounds().height
+    this.bkgHeight = this.container.getBounds().height + this.stage.canvas.height;
 
-    $('#haiku').width(window.innerWidth).height(window.innerWidth * ratio);
-    this.container.y = -this.bkgHeight + this.stage.canvas.height;
-    this.scrollHeight = -this.bkgHeight + this.stage.canvas.height;
+    $('#haiku').width(window.innerWidth).height(window.innerHeight);
+
   },
   initAssets: function() {
     var mountain = new createjs.Bitmap(this.queue.getResult('mountain'));
@@ -256,20 +268,23 @@ var Haiku = React.createClass({
 
     texts.forEach(function(item) {
       var txt = new createjs.Text();
-      txt.font = "35px Coustard";
-      txt.color = "#000000";
+      txt.font = item.typo;
+      txt.color = item.color;
       txt.text = item.text;
       txt.textAlign = 'center';
-      //txt.y = item.position;
       txt.lineWidth = self.stage.canvas.width;
       var b = txt.getBounds();
       txt.x = self.stage.canvas.width / 2;
-      if(self.seasons[item.id]){
+
+      if (self.seasons[item.id]) {
         self.seasons[item.id].addChild(txt);
-      }
-      else if(item.id==='tuto'){
-        var tuto = self.seasons.summer.getChildByName('tuto');
-        tuto.addChild(item);
+      } else if (item.id === 'tuto') {
+        var tuto = self.seasons.summer.getChildByName('tuto'),
+          fingersSprite = tuto.getChildByName('fingersSprite');
+        fingersSprite.x = tuto.getBounds().width / 2 + fingersSprite.getBounds().width / 4;
+        txt.y = 300;
+        self.container.y -= window.innerHeight;
+        tuto.addChild(txt);
       }
     })
   },
