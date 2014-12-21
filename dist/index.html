@@ -15,6 +15,7 @@
   <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0,minimal-ui">
   <link href='http://fonts.googleapis.com/css?family=Coustard' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="css/normalize.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/main.css">
 
   <!--[if lt IE 9]>
@@ -30,10 +31,36 @@
   <header>
     <div class="loader">Loading...</div>
     <a class="btn-start js-btn-start"></a>
+    <div class="white"></div>
   </header>
+
+  <nav id="social">
+    <ul>
+      <li class="fb"></li>
+      <li class="tw"></li>
+      <li class="pt"></li>
+    </ul>
+  </nav>
+  
   <section id="wrapper">
     
   </section>
+  <aside id="gems">
+    <div class="center">
+      <div class="gem gem1" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+      </div>
+       <div class="gem gem2" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+      </div>
+      <div class="gem gem3" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+      </div>
+      <div class="gem gem4" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+      </div>
+    </div>
+    <ul id="social-haikus">
+      <li class="fb"></li>
+      <li class="tw"></li>
+    </ul>
+  </aside>
   <script>
   var createjs = window;
   window.jQuery || document.write('<script src="js/vendor/jquery-1.11.1.min.js"><\/script>')
@@ -44,6 +71,8 @@
   <script src="js/vendor/soundjs-0.5.2.min.js"></script>
   <script src="js/vendor/hammer.min.js"></script>
   <script src="js/vendor/react.min.js"></script>
+  <script src="js/vendor/tooltip.js"></script>
+  <script src="js/vendor/popover.js"></script>
   <script src="js/haiku.js"></script>
 </body>
 

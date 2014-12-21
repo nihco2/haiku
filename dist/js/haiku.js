@@ -12,20 +12,35 @@ var assets = [{
   destX: 300
 }];
 var texts = [{
-  text: 'HAIKU\nCeci est un haiku: cool!',
+  text: 'Je m\'assieds sur la beauté\nDe quelques herbes en train de se dessécher.\nSantoka Taneda',
   id: 'summer',
   typo: '35px Coustard',
-  color: '#000'
+  color: '#fff',
+  position: -450
 }, {
-  text: 'HAIKU\nCeci est un haiku: cool!',
+  text: 'Dans ma solitude\nAu bruit d’un gland tombé\nMe suis réveillé.\nRoséki',
   id: 'autumn',
   typo: '35px Coustard',
-  color: '#000'
+  color: '#fff',
+  position: -200
+}, {
+  text: 'Il n\'y a plus ni ciel ni terre\nrien que la neige\nqui tombe sans fin\nHashin',
+  id: 'winter',
+  typo: '35px Coustard',
+  color: '#fff',
+  position: -200
+}, {
+  text: 'Dans l\'eau que je puise\nscintille le début\ndu printemps\nRingaï ',
+  id: 'spring',
+  typo: '35px Coustard',
+  color: '#fff',
+  position: -200
 }, {
   text: 'Posez votre téléphone ou tablette sur une surface plane et utilisez vos deux doigts\npour marcher sur l\'écran et démarrer\nvotre voyage...',
   id: 'tuto',
   typo: '30px Coustard',
-  color: '#000'
+  color: '#fff',
+  position: 0
 }];
 
 var Haiku = React.createClass({
@@ -41,7 +56,7 @@ var Haiku = React.createClass({
   num: 0,
   it: 0,
   FOOTSTEPS: 60,
-  SCROLL_VELOCITY: 55,
+  SCROLL_VELOCITY: 200,
   ASSET_MOVEMENT: 3,
   RUN_LIMIT: 1000,
   SNOW_SPEED: 3,
@@ -74,11 +89,14 @@ var Haiku = React.createClass({
     createjs.Sound.alternateExtensions = ["mp3"];
     this.queue.installPlugin(createjs.Sound);
     this.queue.loadManifest([{
+      id: "end",
+      src: "assets/bg_end.jpg"
+    }, {
       id: "spring",
       src: "assets/bg_printemps.jpg"
     }, {
       id: "winter",
-      src: "assets/background.jpg"
+      src: "assets/bg_hiver.jpg"
     }, {
       id: "autumn",
       src: "assets/bg_automne.jpg"
@@ -116,8 +134,9 @@ var Haiku = React.createClass({
     this.initListeners();
     this.initWalk();
     this.initTexts();
+    this.displayGems();
     this.initSnowFlakes(this.SNOW_SPEED, this.FLAKES_NUMBER);
-    this.scrollHeight = -this.bkgHeight + this.stage.canvas.height * 2 - 800;
+    this.scrollHeight = -this.bkgHeight + this.stage.canvas.height * 2 - this.stage.canvas.height + window.innerHeight / 2 - 40;
     this.container.y = this.scrollHeight;
   },
   initSeasons: function() {
@@ -127,7 +146,7 @@ var Haiku = React.createClass({
       gradientBkg = new createjs.Shape(),
       self = this;
 
-    gradientBkg.graphics.beginLinearGradientFill(["#fef1e0", "#9cb2d9"], [0, 1], 0, window.innerHeight / 2, 0, window.innerHeight)
+    gradientBkg.graphics.beginLinearGradientFill(["#eee3e1", "#9cb2d9"], [0, 1], 0, window.innerHeight, 0, 400)
       .drawRect(0, 0, window.innerWidth * 2, window.innerHeight * 2);
     fingersSprite.name = 'fingersSprite';
     seasons[0] = self.queue.getResult('spring'),
@@ -153,9 +172,13 @@ var Haiku = React.createClass({
         self.seasons.summer.addChild(tutoContainer);
         tutoContainer.y = self.seasons.summer.getBounds().height;
       }
-      (index > 0) ? bitmapContainer.y = self.container.getBounds().height : bitmapContainer.y = window.innerHeight;
+      (index > 0) ? bitmapContainer.y = self.container.getBounds().height - 1 : bitmapContainer.y = window.innerHeight * 2;
     })
-    self.container.addChild(gradientBkg);
+    var finalContainer = new createjs.Container();
+    var finalBitmap = new createjs.Bitmap(self.queue.getResult('end'));
+    finalContainer.addChild(finalBitmap);
+    finalContainer.name = 'final';
+    self.container.addChild(finalContainer);
     self.stage.addChild(this.container);
   },
   initSize: function() {
@@ -243,10 +266,24 @@ var Haiku = React.createClass({
     }
   },
   initListeners: function() {
+    var self = this;
+
     $('.js-btn-start').on('click', function() {
-      $('header').hide();
-      $('#wrapper').show();
-      /*createjs.Sound.play("wind", {
+      $('.white').show().fadeTo('slow', 1, function() {
+        $('#gems').show();
+        $('#wrapper').show().fadeTo('slow', 1);
+        $('header').remove();
+        var social = document.getElementById("social");
+        var socDOMElement = new DOMElement(social);
+        self.container.getChildByName('final').addChild(socDOMElement);
+        $('.white').fadeTo('slow', 0, function() {
+          $(this).remove();
+
+        });
+      });
+      /*$('#wrapper').show();
+      $('#gems').show();
+      createjs.Sound.play("wind", {
         loop: 'infinite'
       });*/
     });
@@ -274,9 +311,12 @@ var Haiku = React.createClass({
       txt.textAlign = 'center';
       txt.lineWidth = self.stage.canvas.width;
       var b = txt.getBounds();
-      txt.x = self.stage.canvas.width / 2;
+      txt.x = self.stage.canvas.width /
+        2;
+
 
       if (self.seasons[item.id]) {
+        txt.y = self.seasons[item.id].getBounds().height + item.position;
         self.seasons[item.id].addChild(txt);
       } else if (item.id === 'tuto') {
         var tuto = self.seasons.summer.getChildByName('tuto'),
@@ -314,6 +354,7 @@ var Haiku = React.createClass({
     });
   },
   handlePanDown: function(event) {
+    var i = 0;
     this.num = (event.distance * (this.bkgHeight - this.stage.canvas.height) / this.stage.canvas.height) / this.SCROLL_VELOCITY;
     /*if (event.distance > this.RUN_LIMIT && this.gameEnabled) {
       this.disablePan();
@@ -329,7 +370,7 @@ var Haiku = React.createClass({
     }
 
     this.moveAssets('up');
-    console.log(this.container.localToGlobal(this.seasons.winter.x, this.seasons.winter.y))
+
     if (this.checkSeason(this.seasons.winter)) {
       this.walking();
     }
@@ -391,9 +432,9 @@ var Haiku = React.createClass({
     //(lastFootStep.y + this.container.y) > (this.stage.canvas.height / 2 - lastFootStep.getBounds().height)
     //console.log(lastFootStep.y, this.container.y, this.container.y + winter.y + winter.getBounds().height)
     //console.log(lastFootStep.y + this.container.y, -this.stage.canvas.height / 2 - this.bkgHeight + winter.getBounds().height);
-
+    var seasonsHeight = 400 + this.seasons.summer.getBounds().height + this.seasons.autumn.getBounds().height + this.seasons.winter.getBounds().height + this.container.getChildByName('final').getBounds().height;
     if (lastFootStep) {
-      if (lastFootStep.y + this.container.y > this.stage.canvas.height / 2 - this.bkgHeight + this.seasons.summer.getBounds().height + this.seasons.autumn.getBounds().height + this.seasons.winter.getBounds().height) {
+      if (lastFootStep.y + this.container.y > this.stage.canvas.height / 2 - this.bkgHeight + seasonsHeight) {
         this.it++;
         lastFootStep.visible = true;
       }
@@ -418,11 +459,29 @@ var Haiku = React.createClass({
       }
     }
   },
+  displayGems: function() {
+    var gems = document.getElementById("gems");
+
+    var gemsDOMElement = new DOMElement(gems);
+
+    var finalScreen = this.container.getChildByName('final');
+    $('[data-toggle="popover"]').popover();
+
+    finalScreen.addChild(gemsDOMElement);
+    gemsDOMElement.y = 300;
+  },
   componentDidMount: function() {
+    var soc = $("#social-haikus");
     this.stage = new createjs.Stage('haiku');
     createjs.Touch.enable(this.stage);
     createjs.Ticker.setFPS(24);
     this.preloadAssets();
+    $('.gem').on('show.bs.popover', function() {
+      $('[data-toggle="popover"]').popover('hide');
+    }).on('shown.bs.popover', function() {
+      soc.show();
+      $('.popover').append(soc);
+    });
   },
   render: function() {
     return React.DOM.canvas({
