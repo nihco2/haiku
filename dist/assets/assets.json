@@ -1,0 +1,102 @@
+{
+  "manifest": [{
+    "id": "end",
+    "src": "assets/bg_end.jpg"
+  }, {
+    "id": "spring",
+    "src": "assets/bg_printemps.jpg"
+  }, {
+    "id": "winter",
+    "src": "assets/bg_hiver.jpg"
+  }, {
+    "id": "autumn",
+    "src": "assets/bg_automne.jpg"
+  }, {
+    "id": "summer",
+    "src": "assets/bg_ete.jpg"
+  }, {
+    "id": "tree",
+    "src": "assets/assets_1_ete/arbre_1.png"
+  }, {
+    "id": "mountain",
+    "src": "assets/montagne.png"
+  }, {
+    "id": "footstep",
+    "src": "assets/step.png"
+  }, {
+    "id": "fingers",
+    "src": "assets/fingers.png"
+  }, {
+    "src": "assets/fingers.json",
+    "id": "fingersSpriteSheet",
+    "type": "spritesheet"
+  }, {
+    "id": "gem1",
+    "src": "assets/gem_1.png"
+  }, {
+    "id": "gem2",
+    "src": "assets/gem_2.png"
+  }, {
+    "id": "gem3",
+    "src": "assets/gem_3.png"
+  }, {
+    "id": "gem4",
+    "src": "assets/gem_4.png"
+  }, {
+    "id": "tuto",
+    "src": "assets/bg_tuto.jpg"
+  }],
+  "animations": [{
+    "type": "mountain",
+    "name": "mountain1",
+    "season": "winter",
+    "comeFrom": "left",
+    "posY": 920,
+    "destX": -300
+  }, {
+    "type": "tree",
+    "name": "tree1",
+    "season": "summer",
+    "comeFrom": "right",
+    "posY": 4000,
+    "destX": 400
+  }, {
+    "type": "mountain",
+    "name": "mountain2",
+    "season": "winter",
+    "comeFrom": "right",
+    "posY": 1050,
+    "destX": 300
+  }],
+  "sounds": [{
+    "id": "wind",
+    "src": "assets/sounds/wind.mp3"
+  }],
+  "texts": [{
+    "id": "gem1",
+    "typo": "30px Coustard",
+    "color": "#fff",
+    "position": -1350
+  }, {
+    "id": "gem2",
+    "typo": "30px Coustard",
+    "color": "#fff",
+    "position": -600
+  }, {
+    "id": "gem3",
+    "typo": "30px Coustard",
+    "color": "#fff",
+    "position": -800
+  }, {
+    "id": "gem4",
+    "typo": "30px Coustard",
+    "color": "#fff",
+    "position": -170
+  }, {
+    "text": "Posez votre téléphone ou tablette sur une surface plane et utilisez vos deux doigts\npour marcher sur l\"écran et démarrer\nvotre voyage...",
+    "id": "tuto",
+    "typo": "30px Coustard",
+    "color": "#fff",
+    "position": 0
+  }]
+}
