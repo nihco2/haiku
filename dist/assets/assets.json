@@ -16,20 +16,26 @@
     "src": "assets/bg_ete.jpg"
   }, {
     "id": "tree",
-    "src": "assets/assets_1_ete/arbre_1.png"
+    "src": "assets/ete/arbre_1.png"
+  }, {
+    "id": "sauterelle",
+    "src": "assets/ete/sauterelle.png"
   }, {
     "id": "mountain",
     "src": "assets/montagne.png"
   }, {
+    "id": "feuille",
+    "src": "assets/automne/feuille.png"
+  }, {
     "id": "footstep",
     "src": "assets/step.png"
   }, {
-    "id": "fingers",
-    "src": "assets/fingers.png"
-  }, {
-    "src": "assets/fingers.json",
+    "src": "assets/tuto/fingers.json",
     "id": "fingersSpriteSheet",
     "type": "spritesheet"
+  }, {
+    "src": "assets/ete/walk.png",
+    "id": "summerWalk"
   }, {
     "id": "gem1",
     "src": "assets/gem_1.png"
@@ -50,23 +56,38 @@
     "type": "mountain",
     "name": "mountain1",
     "season": "winter",
-    "comeFrom": "left",
+    "posX": 500,
     "posY": 920,
-    "destX": -300
-  }, {
-    "type": "tree",
-    "name": "tree1",
-    "season": "summer",
-    "comeFrom": "right",
-    "posY": 4000,
-    "destX": 400
+    "destX": 400,
+    "destY": 920,
+    "delay": 0
   }, {
     "type": "mountain",
     "name": "mountain2",
     "season": "winter",
-    "comeFrom": "right",
+    "posX": -400,
     "posY": 1050,
-    "destX": 300
+    "destX": -200,
+    "destY": 1050,
+    "delay": 0
+  }, {
+    "type": "sauterelle",
+    "name": "sauterelle",
+    "season": "summer",
+    "posY": 2020,
+    "posX": 350,
+    "destX": -350,
+    "destY": 2020,
+    "delay": 100
+  }, {
+    "type": "tree",
+    "name": "tree1",
+    "season": "summer",
+    "posY": 1850,
+    "posX": 350,
+    "destX": 350,
+    "destY": 1800,
+    "delay": 0
   }],
   "sounds": [{
     "id": "wind",
@@ -76,26 +97,31 @@
     "id": "gem1",
     "typo": "30px Coustard",
     "color": "#fff",
+    "name": "haiku1",
     "position": -1350
   }, {
     "id": "gem2",
     "typo": "30px Coustard",
     "color": "#fff",
+    "name": "haiku2",
     "position": -600
   }, {
     "id": "gem3",
     "typo": "30px Coustard",
     "color": "#fff",
+    "name": "haiku3",
     "position": -800
   }, {
     "id": "gem4",
     "typo": "30px Coustard",
     "color": "#fff",
+    "name": "haiku4",
     "position": -170
   }, {
     "text": "Posez votre téléphone ou tablette sur une surface plane et utilisez vos deux doigts\npour marcher sur l\"écran et démarrer\nvotre voyage...",
     "id": "tuto",
     "typo": "30px Coustard",
+    "name": "tuto",
     "color": "#fff",
     "position": 0
   }]
