@@ -21,14 +21,51 @@
     "id": "sauterelle",
     "src": "assets/ete/sauterelle.png"
   }, {
+    "id": "caille",
+    "src": "assets/ete/caille.png"
+  }, {
+    "id": "ondes_eau",
+    "src": "assets/ete/ondes_eau.png"
+  }, {
+    "id": "poissons",
+    "src": "assets/ete/poissons.png"
+  }, {
+    "id": "butterfly",
+    "src": "assets/ete/butterfly.json",
+    "type": "spritesheet"
+  }, {
     "id": "mountain",
     "src": "assets/montagne.png"
   }, {
     "id": "feuille",
     "src": "assets/automne/feuille.png"
   }, {
-    "id": "footstep",
-    "src": "assets/step.png"
+    "id": "ecureuil",
+    "src": "assets/automne/ecureuil.png"
+  }, {
+    "id": "oiseau",
+    "src": "assets/automne/oiseau.png"
+  }, {
+    "id": "fish",
+    "src": "assets/hiver/fish.png"
+  }, {
+    "id": "lapin",
+    "src": "assets/hiver/lapin.png"
+  }, {
+    "id": "merle",
+    "src": "assets/hiver/merle.png"
+  }, {
+    "id": "coccinelle",
+    "src": "assets/printemps/coccinelle.png"
+  }, {
+    "id": "hirondelle",
+    "src": "assets/printemps/hirondelle.png"
+  }, {
+    "id": "hirondelles_fil",
+    "src": "assets/printemps/hirondelles_fil.png"
+  }, {
+    "id": "poissons2",
+    "src": "assets/printemps/poissons.png"
   }, {
     "src": "assets/tuto/fingers.json",
     "id": "fingersSpriteSheet",
@@ -36,6 +73,15 @@
   }, {
     "src": "assets/ete/walk.png",
     "id": "summerWalk"
+  }, {
+    "src": "assets/printemps/walk.png",
+    "id": "springWalk"
+  }, {
+    "src": "assets/automne/walk.png",
+    "id": "autumnWalk"
+  }, {
+    "src": "assets/hiver/walk.png",
+    "id": "winterWalk"
   }, {
     "id": "gem1",
     "src": "assets/gem_1.png"
@@ -53,7 +99,6 @@
     "src": "assets/bg_tuto.jpg"
   }],
   "animations": [{
-    "type": "mountain",
     "name": "mountain1",
     "season": "winter",
     "posX": 500,
@@ -62,7 +107,6 @@
     "destY": 920,
     "delay": 0
   }, {
-    "type": "mountain",
     "name": "mountain2",
     "season": "winter",
     "posX": -400,
@@ -71,26 +115,129 @@
     "destY": 1050,
     "delay": 0
   }, {
-    "type": "sauterelle",
     "name": "sauterelle",
     "season": "summer",
     "posY": 2020,
     "posX": 350,
     "destX": -350,
     "destY": 2020,
-    "delay": 100
+    "delay": -20
   }, {
-    "type": "tree",
-    "name": "tree1",
+    "name": "tree",
     "season": "summer",
     "posY": 1850,
     "posX": 350,
     "destX": 350,
-    "destY": 1800,
+    "destY": 1850,
+    "delay": 0
+  }, {
+    "name": "butterfly",
+    "season": "summer",
+    "type": "spritesheet",
+    "posY": 1450,
+    "posX": -50,
+    "destX": 700,
+    "destY": 850,
+    "delay": 0
+  }, {
+    "name": "caille",
+    "season": "summer",
+    "posY": 500,
+    "posX": 50,
+    "destX": 50,
+    "destY": 500,
+    "delay": 60
+  }, {
+    "name": "poissons",
+    "season": "summer",
+    "posY": 200,
+    "posX": 230,
+    "destX": -100,
+    "destY": 200,
+    "delay": 0
+  }, {
+    "name": "ondes_eau",
+    "season": "summer",
+    "posY": 62,
+    "posX": 0,
+    "destX": 0,
+    "destY": 62,
+    "delay": 0
+  }, {
+    "name": "ecureuil",
+    "season": "autumn",
+    "posY": 1800,
+    "posX": 0,
+    "destX": 0,
+    "destY": 2800,
+    "delay": 0
+  }, {
+    "name": "oiseau",
+    "season": "autumn",
+    "posY": 4250,
+    "posX": -100,
+    "destX": 50,
+    "destY": 4250,
+    "delay": 0
+  }, {
+    "name": "fish",
+    "season": "winter",
+    "posY": 100,
+    "posX": 700,
+    "destX": -100,
+    "destY": 200,
+    "delay": 0
+  }, {
+    "name": "lapin",
+    "season": "winter",
+    "posY": 900,
+    "posX": 400,
+    "destX": 800,
+    "destY": 900,
+    "delay": 40
+  }, {
+    "name": "merle",
+    "season": "winter",
+    "posY": 4100,
+    "posX": -30,
+    "destX": 50,
+    "destY": 4100,
+    "delay": 0
+  }, {
+    "name": "coccinelle",
+    "season": "spring",
+    "posY": 3500,
+    "posX": 200,
+    "destX": 200,
+    "destY": 3000,
+    "delay": 0
+  }, {
+    "name": "hirondelle",
+    "season": "spring",
+    "posY": 0,
+    "posX": -100,
+    "destX": 640,
+    "destY": 500,
+    "delay": 0
+  }, {
+    "name": "hirondelles_fil",
+    "season": "spring",
+    "posY": 1500,
+    "posX": 0,
+    "destX": 0,
+    "destY": 2000,
+    "delay": 0
+  }, {
+    "name": "poissons2",
+    "season": "spring",
+    "posY": 4500,
+    "posX": -250,
+    "destX": 200,
+    "destY": 4500,
     "delay": 0
   }],
   "sounds": [{
-    "id": "wind",
+    "name": "wind",
     "src": "assets/sounds/wind.mp3"
   }],
   "texts": [{
@@ -116,7 +263,7 @@
     "typo": "30px Coustard",
     "color": "#fff",
     "name": "haiku4",
-    "position": -170
+    "position": -200
   }, {
     "text": "Posez votre téléphone ou tablette sur une surface plane et utilisez vos deux doigts\npour marcher sur l\"écran et démarrer\nvotre voyage...",
     "id": "tuto",

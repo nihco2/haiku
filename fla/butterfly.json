@@ -1,0 +1,6 @@
+{
+"framerate":24,
+"images":["butterfly.png"],
+"frames":[[74, 0, 149, 164, 0, -1, -1], [0, 0, 74, 165, 0, -39, 0]],
+"animations":{}
+}

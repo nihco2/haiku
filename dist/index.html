@@ -10,9 +10,21 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>Le marcheur de saison</title>
-  <meta name="description" content="">
+  <meta name="description" content="Le marcheur de saison, un haiku interactif de Cosmografik, illustré par Barbara Govin">
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0,minimal-ui">
+
+  <meta property="og:title" content="Le marcheur de saison"/>
+  <meta property="og:description" content="Le marcheur de saison, un haiku interactif de Cosmografik, illustré par Barbara Govin" />
+  <meta property="og:url" content="" />
+  <meta property="og:site_name" content="Le marcheur de saison"/>
+  <meta property="og:image" content="assets/post_facebook.jpg" />
+
+  <meta name="twitter:card" content="Le marcheur de saison" />
+  <meta name="twitter:site" content="Le marcheur de saison" />
+  <meta name="twitter:title" content="Le marcheur de saison" />
+  <meta name="twitter:description" content="Le marcheur de saison, un haiku interactif de Cosmografik, illustré par Barbara Govin" />
+  <meta name="twitter:image:src" content="assets/post_twitter.jpg" />
 
   <link rel="apple-touch-icon" sizes="57x57" href="touch-icon-iphone.png">
   <link rel="apple-touch-icon" sizes="76x76" href="touch-icon-ipad.png">
@@ -39,33 +51,34 @@
     <a class="btn-start js-btn-start"></a>
     <div class="white"></div>
     <nav id="social">
-      <ul>
-        <li class="fb"></li>
-        <li class="tw"></li>
-        <li class="pt"></li>
+      <ul class="social-share">
+        <li class="fb" data-provider="facebook"></li>
+        <li class="tw" data-provider="twitter"></li>
+        <li class="pt" data-provider="pinterest"></li>
       </ul>
     </nav>
-    <h1 class="logo">Le marcheur de saison</h1>
+    <h1 class="logo">Le marcheur de saison, un haiku interactif de Cosmografik, illustré par Barbara Govin</h1>
   </header>
  
   <section id="wrapper">
     
   </section>
   <aside id="gems">
+    <div class="logo"></div>
     <div class="center">
       <p>Partagez votre saison préférée</p>
-      <div id="gem1" class="gem" data-season="summer" data-x="10" data-y="1400" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Je m'assieds sur la beauté<br>De quelques herbes en train<br>de se dessécher.<br>Santoka Taneda">
+      <div id="gem1" class="gem" data-season="summer" data-x="10" data-y="1200" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Je m'assieds sur la beauté<br>de quelques herbes en train<br>de se dessécher.<br><br>Santoka Taneda">
       </div>
-       <div id="gem2" class="gem" data-season="autumn" data-x="100" data-y="1300" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Dans ma solitude<br>Au bruit d’un gland tombé<br>Me suis réveillé.<br>Roséki">
+       <div id="gem2" class="gem" data-season="autumn" data-x="100" data-y="1300" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Dans ma solitude<br>au bruit d’un gland tombé<br>me suis réveillé.<br><br>Roséki">
       </div>
-      <div id="gem3" class="gem" data-season="winter" data-x="400" data-y="1600" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Il n'y a plus ni ciel ni terre<br>rien que la neige<br>qui tombe sans fin<br>Hashin">
+      <div id="gem3" class="gem" data-season="winter" data-x="400" data-y="1600" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Il n'y a plus ni ciel ni terre<br>rien que la neige<br>qui tombe sans fin<br><br>Hashin">
       </div>
-      <div id="gem4" class="gem" data-season="spring" data-x="100" data-y="500" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Dans l'eau que je puise<br>scintille le début<br>du printemps<br>Ringaï">
+      <div id="gem4" class="gem" data-season="spring" data-x="100" data-y="3500" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Dans l'eau que je puise<br>scintille le début<br>du printemps<br><br>Ringaï">
       </div>
     </div>
-    <ul id="social-haikus">
-      <li class="fb"></li>
-      <li class="tw"></li>
+    <ul id="social-haikus" class="social-share">
+      <li class="fb" data-provider="facebook"></li>
+      <li class="tw" data-provider="twitter"></li>
     </ul>
   </aside>
   <script>

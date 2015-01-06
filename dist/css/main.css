@@ -58,11 +58,14 @@ header {
 .logo{
   background: url('../assets/homepage_logo.png') no-repeat center;
   font-size: 0;
-  height: 45%;
+  height: 240px;
   width: 100%;
   position: absolute;
   top:30px;
   background-size: contain;
+}
+aside .logo{
+  top:-240px;
 }
 canvas{
   width: 100%;
@@ -137,6 +140,7 @@ canvas{
   color:#fff;
   font-family: 'Coustard';
 }
+
 nav{
   position: absolute;
   top:0;
@@ -164,9 +168,8 @@ nav{
 }
 
 .popover{
-  left:5px !important;
   width: 97%;
-  max-width: 100%;
+  max-width: 320px;
 }
 .popover-content{
   text-align: center;
@@ -182,8 +185,6 @@ nav li,#social-haikus li{
 }
 
 #gems{
-  position: static !important;
-  margin-left: -325px;
   display: none;
 }
 
@@ -192,31 +193,38 @@ nav li,#social-haikus li{
   font-family: 'Coustard';
 }
 
+aside{
+  max-width: 640px;
+  margin: 0 auto;
+  position:  relative !important;
+}
 .center{
-  margin-left: 50%;
+  max-width: 320px;
+  text-align: center;
+  margin: 0 auto;
 }
-#gem1{
-  background: url('../assets/gem_1.png');
-  background-size:contain;
+.gem1{
+  background: url('../assets/gem_1.png') !important;
+  background-size:contain !important;
 }
-
-#gem2{
-  background: url('../assets/gem_2.png');
-  background-size:contain;
+.gem2{
+  background: url('../assets/gem_2.png') !important;
+  background-size:contain !important;
 }
-#gem3{
-  background: url('../assets/gem_3.png');
-  background-size:contain;
+.gem3{
+  background: url('../assets/gem_3.png') !important;
+  background-size:contain !important;
 }
-#gem4{
-  background: url('../assets/gem_4.png');
-  background-size:contain;
+.gem4{
+  background: url('../assets/gem_4.png') !important;
+  background-size:contain !important;
 }
 .gem{
   float: left;
   width: 80px;
   height: 80px;
-  /*display: none;*/
+  background: url('../assets/gem_blank.png');
+  background-size:contain;
 }
 
 @-webkit-keyframes load3 {

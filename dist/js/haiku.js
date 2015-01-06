@@ -16,7 +16,7 @@ var Haiku = React.createClass({
   scroll_end: 0,
   FOOTSTEPS: 60,
   SCROLL_VELOCITY: 200,
-  ASSET_MOVEMENT: 3,
+  ASSET_MOVEMENT: 4,
   RUN_LIMIT: 1000,
   PARTICLES_SPEED: 3,
   SNOW_SIZE: 7,
@@ -40,7 +40,8 @@ var Haiku = React.createClass({
   },
   isOnScreen: function(el) {
     var elTop = this.seasons[el.season].localToGlobal(el.x, el.y).y;
-    return (elTop + el.getBounds().height - el.delay >= 0);
+    var height = el.getBounds() ? el.getBounds().height : 0;
+    return (elTop + height - el.delay >= 0);
   },
   checkSeason: function(season) {
     return (this.container.y >= -(season.y + season.getBounds().height) && this.container.y <= -season.y);
@@ -123,14 +124,19 @@ var Haiku = React.createClass({
     }
     this.bkgHeight = this.container.getBounds().height;
     this.scrollHeight = -this.bkgHeight + this.stage.canvas.height;
-    tuto.getChildByName('fingersSprite').y = tuto.getBounds().height - this.stage.canvas.height;
+    tuto.getChildByName('fingersSprite').y = tuto.getBounds().height/2-tuto.getChildByName('fingersSprite').getBounds().height;
     this.scrollToBottom();
   },
   initAssets: function() {
-    var self = this;
+    var self = this,
+      item;
     self.animations.forEach(function(asset, index) {
-      var item = new createjs.Bitmap(self.queue.getResult(asset.type));
-
+      if (asset.type === 'spritesheet') {
+        spriteSheet = new createjs.SpriteSheet(JSON.parse(self.queue.getResult(asset.name)));
+        item = new createjs.Sprite(spriteSheet, 'anim');
+      } else {
+        item = new createjs.Bitmap(self.queue.getResult(asset.name));
+      }
       item.name = asset.name;
       item.season = asset.season;
       item.y = asset.posY;
@@ -138,6 +144,7 @@ var Haiku = React.createClass({
       item.destX = asset.destX;
       item.destY = asset.destY;
       item.posX = asset.posX;
+      item.posY = asset.posY;
       item.delay = asset.delay;
       self.collection.push(item);
       self.seasons[asset.season].addChild(item);
@@ -148,37 +155,21 @@ var Haiku = React.createClass({
   },
 
   initWalk: function() {
-    /*    var footstep = new createjs.Bitmap(this.queue.getResult('footstep')),
-      winter = this.container.getChildByName('winter'),
-      footPosX = this.stage.canvas.width / 2 - footstep.getBounds().width;
+    var walkContainer = new createjs.Container();
+    walkContainer.name = 'walk';
+    for (var season in this.seasons) {
+      var walk = new createjs.Bitmap(this.queue.getResult(season + 'Walk'));
+      walk.y = this.seasons[season].y;
+      walk.x = 120;
+      walkContainer.addChild(walk);
+    }
 
-    winter.addChild(footstep);
-
-    footstep.y = winter.getBounds().height - footstep.getBounds().height;
-    footstep.x = this.stage.canvas.width / 2 - footstep.getBounds().width;
-
-    for (var i = 0; i < this.FOOTSTEPS; i++) {
-      var footstepClone = footstep.clone();
-      lastFootStepIndex = winter.getNumChildren() - 1;
-      footstepClone.y = winter.getChildAt(lastFootStepIndex).y - footstep.getBounds().height * 2;
-
-      if (i % 2 === 0) {
-        footstepClone.x = footPosX + (2 * footstep.getBounds().width);
-      }
-      footstepClone.name = 'footstep' + i;
-      winter.addChild(footstepClone);
-      footstepClone.visible = false;
-    }*/
-    var summerWalk = new createjs.Bitmap(this.queue.getResult('summerWalk'));
     var shape = new createjs.Shape();
-    summerWalk.name = 'walk';
-    summerWalk.x = 150;
 
-    summerWalk.y = this.seasons.summer.y;
-    console.log(this.stage.canvas.width)
-    shape.graphics.drawRect(0, 0, this.stage.canvas.width, this.seasons.summer.getBounds().height);
-    summerWalk.mask = shape;
-    this.container.addChild(summerWalk);
+    shape.graphics.beginFill("#ff0000").drawRect(0, 0, this.container.getBounds().width, this.container.getBounds().height);
+    walkContainer.mask = shape;
+    shape.y = this.container.getBounds().height;
+    this.container.addChild(walkContainer);
   },
 
   initParticles: function(speed, particlesNumber) {
@@ -201,8 +192,7 @@ var Haiku = React.createClass({
             particle.scaleX = particle.scaleY = 0.8;
             break;
           case 'summer':
-            //var summerSpriteSheet = new createjs.SpriteSheet(JSON.parse(this.queue.getResult('summerSpriteSheet')));
-            //particle = new createjs.Sprite(summerSpriteSheet, 'run');
+
             particle = new createjs.Container();
             break;
         }
@@ -252,10 +242,22 @@ var Haiku = React.createClass({
         }
         e.preventDefault();
       });
-      /*
-      createjs.Sound.play("wind", {
+      /*createjs.Sound.play("wind", {
         loop: 'infinite'
       });*/
+    });
+
+    $('.social-share li').on('click', function(event) {
+      var provider = $(event.target).data('provider');
+      var text = $(event.target).parents('#social-haikus').prev().html();
+
+      if (!text) {
+        text = $('h1').text();
+      } else {
+        var regex = /<br\s*[\/]?>/gi;
+        text = text.replace(regex, ' ');
+      }
+      self.socShare(provider, text);
     });
 
     mc = new Hammer(this.stage.canvas);
@@ -347,6 +349,7 @@ var Haiku = React.createClass({
         y: this.container.y - this.num
       }, 0, Ease.cubicOut);
     }
+    this.walking();
     this.moveAssets('down');
     this.setCurrentSeason();
   },
@@ -367,6 +370,7 @@ var Haiku = React.createClass({
       });
     } else {
       self.disablePan();
+      this.walking();
       Tween.get(self.container).to({
         y: (self.currentDirection === 'down') ? self.container.y + self.scroll_end : self.container.y - self.scroll_end
       }, self.END_TOUCH_EVENT, Ease.quadOut).call(function() {
@@ -410,55 +414,71 @@ var Haiku = React.createClass({
   },
   moveAssets: function(vertical) {
     var self = this;
+
     self.collection.forEach(function(item) {
       if (self.isOnScreen(item) && vertical === 'up') {
+       
         if (item.posX > item.destX) {
-          self.moveAssetToLeft(item, item.destX, item.destY);
+          self.moveAssetToLeft(item, item.destX);
         } else if (item.posX < item.destX) {
-          self.moveAssetToRight(item, item.destX, item.destY);
+          self.moveAssetToRight(item, item.destX);
+        }
+        if (item.posY > item.destY) {
+          self.moveAssetToUp(item, item.destY);
+        } else if (item.posY < item.destY) {
+          self.moveAssetToDown(item, item.destY);
         }
       }
 
       if (self.isOnScreen(item) && vertical === 'down') {
         if (item.posX > item.destX) {
-          self.moveAssetToRight(item, item.posX, item.destY);
+          self.moveAssetToRight(item, item.posX);
         } else if (item.posX < item.destX) {
-          self.moveAssetToLeft(item, item.posX, item.destY);
+          self.moveAssetToLeft(item, item.posX);
+        }
+        if (item.posY > item.destY) {
+          self.moveAssetToDown(item, item.posY);
+        } else if (item.posY < item.destY) {
+          self.moveAssetToUp(item, item.posY);
         }
       }
     })
   },
-  moveAssetToLeft: function(target, max, destY) {
-    var mvtY = target.y;
-    if (target.y > destY) {
-      mvtY -= this.ASSET_MOVEMENT;
-    } else if (target.y < destY) {
-      mvtY += this.ASSET_MOVEMENT;
-    }
+  moveAssetToLeft: function(target, max) {
     if (target.x >= max) {
       Tween.get(target).to({
-        x: (target.x - this.ASSET_MOVEMENT),
-        y: mvtY
+        x: (target.x - this.ASSET_MOVEMENT)
       }, 0, Ease.cubicOut);
     }
   },
-  moveAssetToRight: function(target, max, destY) {
-    var mvtY = target.y;
-    if (target.y > destY) {
-      mvtY += this.ASSET_MOVEMENT;
-    } else if (target.y < destY) {
-      mvtY -= this.ASSET_MOVEMENT;
-    }
+  moveAssetToRight: function(target, max) {
     if (target.x <= max) {
       Tween.get(target).to({
-        x: (target.x + this.ASSET_MOVEMENT),
-        y: mvtY
+        x: (target.x + this.ASSET_MOVEMENT)
+      }, 0, Ease.cubicOut);
+    }
+  },
+  moveAssetToUp: function(target, max) {
+    if (target.y >= max) {
+      Tween.get(target).to({
+        y: (target.y - this.ASSET_MOVEMENT)
+      }, 0, Ease.cubicOut);
+    }
+  },
+  moveAssetToDown: function(target, max) {
+    console.log(target.name)
+    if (target.y <= max) {
+      Tween.get(target).to({
+        y: (target.y + this.ASSET_MOVEMENT)
       }, 0, Ease.cubicOut);
     }
   },
   walking: function() {
-    /*var footsteps = this.seasons.summer.getChildByName('walk');
-    console.log(footsteps);*/
+    var footsteps = this.container.getChildByName('walk');
+    footsteps.mask.y = -this.container.y + this.stage.canvas.height / 2;
+    Tween.get(footsteps.mask).to({
+      y: -this.container.y + this.stage.canvas.height / 2
+    }, self.END_TOUCH_EVENT, Ease.quadOut);
   },
   tick: function() {
     this.fall();
@@ -487,7 +507,7 @@ var Haiku = React.createClass({
     var finalScreen = this.container.getChildByName('final');
     var index = 1;
     var collect = function(event) {
-      $('#' + event.target.id).show();
+      $('#' + event.target.id).addClass(event.target.id);
       Tween.get(event.target).to({
         alpha: 0
       }, 500, Ease.cubicOut);
@@ -505,7 +525,8 @@ var Haiku = React.createClass({
     };
 
     $('[data-toggle="popover"]').popover({
-      html: true
+      html: true,
+      container: 'aside'
     });
     finalScreen.addChild(gemsDOMElement);
     gemsDOMElement.y = 300;
@@ -542,6 +563,21 @@ var Haiku = React.createClass({
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
+  },
+  socShare: function(socialMedia, text) {
+    var socialMediaUrl;
+    switch (socialMedia) {
+      case 'facebook':
+        socialMediaUrl = "http://www.facebook.com/sharer.php?u=" + text;
+        break;
+      case 'twitter':
+        socialMediaUrl = "http://twitter.com/home?status=" + text;
+        break;
+      case 'pinterest':
+        socialMediaUrl = "https://pinterest.com/pin/create/button/?url=" + encodeURIComponent(window.location.href) + "&media=" + window.location.href + "/assets/post_pinterest.jpg&description=" + text;
+        break;
+    }
+    window.open(socialMediaUrl, socialMedia, "toolbar=0,status=0,width=900,height=626");
   },
   render: function() {
     if (!this.isMobile()) {

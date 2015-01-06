@@ -1,0 +1,9 @@
+{
+  "framerate": 12,
+  "images": ["assets/ete/butterfly_0.png", "assets/ete/butterfly_1.png"],
+  "frames": [
+    [0, 0, 256, 256, 0, -1, 0],
+    [0, 0, 256, 256, 1, -1, 0]
+  ],
+  "animations": {}
+}
