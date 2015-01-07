@@ -63,10 +63,10 @@ var Haiku = React.createClass({
     $('.js-btn-start').addClass('block');
     this.initSeasons();
     this.initSize();
+    this.initWalk();
     this.initAssets();
     this.initListeners();
     this.initTexts();
-    this.initWalk();
     this.displayGems();
     this.initParticles(this.PARTICLES_SPEED, this.PARTICLES_NUMBER);
   },
