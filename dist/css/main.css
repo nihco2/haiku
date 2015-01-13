@@ -13,6 +13,21 @@ body{
   background:url('../assets/bg_desktop.jpg') no-repeat;
   background-size:cover;
 }
+.bkg-autumn{
+  background:url('../assets/bg_desktop_2.jpg') no-repeat;
+  opacity: 1;
+  transition: opacity 2s linear;
+}
+.bkg-winter{
+  background:url('../assets/bg_desktop_3.jpg') no-repeat;
+  opacity: 1;
+  transition: opacity 2s linear;
+}
+.bkg-spring{
+  background:url('../assets/bg_desktop_4.jpg') no-repeat;
+  opacity: 1;
+  transition: opacity 2s linear;
+}
 ::-moz-selection {
   background: #b3d4fc;
   text-shadow: none;
@@ -55,6 +70,7 @@ header {
   background:  url('../assets/bg_homepage.jpg') no-repeat center;
   background-size:cover;
 }
+
 .logo{
   background: url('../assets/homepage_logo.png') no-repeat center;
   font-size: 0;
@@ -94,9 +110,13 @@ canvas{
   height: 125px;
   margin: 0 auto;
   position: relative;
-  top: 65%;
+  top: 60%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   cursor: pointer;
+}
+.btn-start.press{
+  width: 120px;
+  height: 120px;
 }
 .block {
   display: block;
@@ -115,38 +135,41 @@ canvas{
   display: block;
 }
 
-.rotate {
-  float: left;
-  transform: rotate(-90deg);
-}
-.rotate:after {
-  content: '';
-  clear: both;
-  width: 0;
-  height: 0;
-}
 .loader {
   font-size: 10px;
   margin: 0 auto;
-  position: relative;
-  top: 65%;
-  width: 125px;
-  height: 125px;
-  background: url('../assets/loading_circle.png');
-  background-size:contain;
+  position: absolute;
+  top: 60%;
+  left: 50%;
   text-align: center;
   font-size: 20px;
   padding-top: 50px;
+  margin-left: -15px;
   color:#fff;
   font-family: 'Coustard';
 }
 
+.rotating:before {
+  content:"-";
+  font-size: 0px;
+  position: absolute;
+  text-align: center;
+  width: 125px;
+  height: 125px;
+  margin-top: -50px;
+  margin-left: -50px;
+  background: url('../assets/loading_circle.png');
+  background-size:contain;
+  animation: rotating 2s linear infinite;
+  -webkit-animation: rotating 2s linear infinite;
+}
+
 nav{
   position: absolute;
-  top:0;
-  right: 0;
+  bottom:30px;
+  left: 50%;
+  margin-left: -96px;
   z-index: 1;
-  margin: 10px;
 }
 .fb{
   background: url('../assets/btn_facebook.png') no-repeat;
@@ -167,10 +190,20 @@ nav{
   margin-bottom: 2px;
 }
 
+.credits{
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  display: block;
+  bottom:5px;
+  color:white;
+}
+
 .popover{
   width: 97%;
   max-width: 320px;
 }
+
 .popover-content{
   text-align: center;
   line-height: 1;
@@ -227,23 +260,11 @@ aside{
   background-size:contain;
 }
 
-@-webkit-keyframes load3 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-@keyframes load3 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+@-webkit-keyframes rotating {
+    from{
+        -webkit-transform: rotate(0deg);
+    }
+    to{
+        -webkit-transform: rotate(360deg);
+    }
 }

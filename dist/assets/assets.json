@@ -97,6 +97,9 @@
   }, {
     "id": "tuto",
     "src": "assets/bg_tuto.jpg"
+  }, {
+    "id": "keyboard",
+    "src": "assets/keyboard_desktop.png"
   }],
   "animations": [{
     "name": "mountain1",
@@ -267,6 +270,13 @@
   }, {
     "text": "Posez votre téléphone ou tablette sur une surface plane et utilisez vos deux doigts\npour marcher sur l\"écran et démarrer\nvotre voyage...",
     "id": "tuto",
+    "typo": "30px Coustard",
+    "name": "tuto",
+    "color": "#fff",
+    "position": 0
+  }, {
+    "text": "Utilisez les flèches gauche et droite de votre clavier pour avancer un pas après l'autre...",
+    "id": "desktop",
     "typo": "30px Coustard",
     "name": "tuto",
     "color": "#fff",

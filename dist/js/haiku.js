@@ -28,25 +28,25 @@ var Haiku = React.createClass({
     green: 255,
     blue: 255
   },
-  isPortrait: function () {
+  isPortrait: function() {
     if (window.innerHeight > window.innerWidth) {
       return true;
     } else {
       return false;
     }
   },
-  isMobile: function () {
+  isMobile: function() {
     return (/Mobile|Android|iPhone|iPod|BlackBerry|Windows Phone/i).test(navigator.userAgent || navigator.vendor || window.opera) ? true : false;
   },
-  isOnScreen: function (el) {
+  isOnScreen: function(el) {
     var elTop = this.seasons[el.season].localToGlobal(el.x, el.y).y;
     var height = el.getBounds() ? el.getBounds().height : 0;
     return (elTop + height - el.delay >= 0);
   },
-  checkSeason: function (season) {
+  checkSeason: function(season) {
     return (this.container.y >= -(season.y + season.getBounds().height) && this.container.y <= -season.y);
   },
-  preloadAssets: function (manifest, sounds) {
+  preloadAssets: function(manifest, sounds) {
     createjs.Sound.alternateExtensions = ["mp3"];
     this.queue.installPlugin(createjs.Sound);
     this.queue.loadManifest(manifest, true);
@@ -54,11 +54,11 @@ var Haiku = React.createClass({
     this.queue.on("complete", this.handleComplete);
     this.queue.on("progress", this.handleProgress);
   },
-  handleProgress: function (event) {
+  handleProgress: function(event) {
     var loaded = Math.round(event.loaded * 100) + '%';
     $('.loader').text(loaded);
   },
-  handleComplete: function () {
+  handleComplete: function() {
     $('.loader').remove();
     $('.js-btn-start').addClass('block');
     this.initSeasons();
@@ -70,7 +70,7 @@ var Haiku = React.createClass({
     this.displayGems();
     this.initParticles(this.PARTICLES_SPEED, this.PARTICLES_NUMBER);
   },
-  initSeasons: function () {
+  initSeasons: function() {
     var seasons = [],
       fingersSpriteSheet = new createjs.SpriteSheet(JSON.parse(this.queue.getResult('fingersSpriteSheet'))),
       fingersSprite = new createjs.Sprite(fingersSpriteSheet, 'walk'),
@@ -91,7 +91,7 @@ var Haiku = React.createClass({
     seasons[2]['name'] = 'autumn',
     seasons[3] = self.queue.getResult('summer'),
     seasons[3]['name'] = 'summer';
-    seasons.forEach(function (season, index) {
+    seasons.forEach(function(season, index) {
       var bitmap = new createjs.Bitmap(season);
       var bitmapContainer = new createjs.Container();
       bitmapContainer.name = season.name;
@@ -103,9 +103,17 @@ var Haiku = React.createClass({
         var tutoContainer = new createjs.Container();
         tutoContainer.addChild(tutoBkg);
         tutoContainer.name = 'tuto';
-        tutoContainer.addChild(fingersSprite);
+
         self.seasons.summer.addChild(tutoContainer);
         tutoContainer.y = self.seasons.summer.getBounds().height;
+        if (!self.isMobile()) {
+          var desktop = new createjs.Bitmap(self.queue.getResult('keyboard'));
+          desktop.y = tutoContainer.getBounds().height - 500;
+          desktop.x = tutoContainer.getBounds().width / 2 - desktop.getBounds().width / 2;
+          tutoContainer.addChild(desktop);
+        } else {
+          tutoContainer.addChild(fingersSprite);
+        }
       }
       (index > 0) ? bitmapContainer.y = self.container.getBounds().height - 1 : bitmapContainer.y = finalContainer.getBounds().height;
     })
@@ -113,24 +121,27 @@ var Haiku = React.createClass({
     self.stage.addChild(this.container);
 
   },
-  initSize: function () {
+  initSize: function() {
     var tuto = this.seasons.summer.getChildByName('tuto');
     this.stage.canvas.width = this.container.getBounds().width;
     if (!this.isMobile()) {
       this.stage.canvas.height = window.innerHeight * (this.stage.canvas.width / $('#wrapper').width());
-      $('#haiku').width($('#wrapper').width).height(window.innerHeight);
+      $('#haiku').width($('#wrapper').width);
     } else {
       this.stage.canvas.height = window.innerHeight * (this.stage.canvas.width / window.innerWidth);
     }
     this.bkgHeight = this.container.getBounds().height;
     this.scrollHeight = -this.bkgHeight + this.stage.canvas.height;
-    tuto.getChildByName('fingersSprite').y = tuto.getBounds().height / 2 - tuto.getChildByName('fingersSprite').getBounds().height;
+    if (this.isMobile()) {
+      tuto.getChildByName('fingersSprite').y = tuto.getBounds().height / 2 - tuto.getChildByName('fingersSprite').getBounds().height;
+    }
+
     this.scrollToBottom();
   },
-  initAssets: function () {
+  initAssets: function() {
     var self = this,
       item;
-    self.animations.forEach(function (asset, index) {
+    self.animations.forEach(function(asset, index) {
       if (asset.type === 'spritesheet') {
         spriteSheet = new createjs.SpriteSheet(JSON.parse(self.queue.getResult(asset.name)));
         item = new createjs.Sprite(spriteSheet, 'anim');
@@ -150,11 +161,11 @@ var Haiku = React.createClass({
       self.seasons[asset.season].addChild(item);
     });
   },
-  resize: function () {
+  resize: function() {
 
   },
 
-  initWalk: function () {
+  initWalk: function() {
     for (var season in this.seasons) {
       var walk = new createjs.Bitmap(this.queue.getResult(season + 'Walk'));
       var shape = new createjs.Shape();
@@ -163,34 +174,33 @@ var Haiku = React.createClass({
       shape.y = this.seasons[season].getBounds().height;
       walk.mask = shape;
       walk.x = 120;
-      console.log(season)
       this.seasons[season].addChild(walk);
     }
   },
 
-  initParticles: function (speed, particlesNumber) {
+  initParticles: function(speed, particlesNumber) {
     var timer = setInterval(this.changeMovement, this.PARTICLES_TIME_CHANGE_DIRECTION);
     for (var season in this.seasons) {
       for (var i = 0; i < particlesNumber; i++) {
         var particle = {};
         switch (season) {
-        case 'winter':
-          var g = new createjs.Graphics();
-          particle = new createjs.Shape(g);
-          g.beginFill(createjs.Graphics.getRGB(this.SNOW_COLOR.red, this.SNOW_COLOR.green, this.SNOW_COLOR.blue));
-          g.drawCircle(0, 0, this.SNOW_SIZE);
-          break;
-        case 'spring':
-          particle = new createjs.Container();
-          break;
-        case 'autumn':
-          particle = new createjs.Bitmap(this.queue.getResult('feuille'));
-          particle.scaleX = particle.scaleY = 0.8;
-          break;
-        case 'summer':
+          case 'winter':
+            var g = new createjs.Graphics();
+            particle = new createjs.Shape(g);
+            g.beginFill(createjs.Graphics.getRGB(this.SNOW_COLOR.red, this.SNOW_COLOR.green, this.SNOW_COLOR.blue));
+            g.drawCircle(0, 0, this.SNOW_SIZE);
+            break;
+          case 'spring':
+            particle = new createjs.Container();
+            break;
+          case 'autumn':
+            particle = new createjs.Bitmap(this.queue.getResult('feuille'));
+            particle.scaleX = particle.scaleY = 0.8;
+            break;
+          case 'summer':
 
-          particle = new createjs.Container();
-          break;
+            particle = new createjs.Container();
+            break;
         }
 
         particle.vel = (Math.random() * speed) + 0.5;
@@ -204,46 +214,63 @@ var Haiku = React.createClass({
       }
     }
   },
-  initListeners: function () {
+  initListeners: function() {
     var self = this,
+      left = true,
       social = document.getElementById("social"),
       socDOMElement = new DOMElement(social);
 
-    $('.js-btn-start').on('click', function () {
-      $('.white').show().fadeTo('slow', 1, function () {
+    $('.js-btn-start').on('click', function() {
+      $('.white').show().fadeTo('slow', 1, function() {
         $('#gems').show();
         $('#wrapper').show().fadeTo('slow', 1);
-        $('header').remove();
+        $('header,footer').remove();
 
         self.container.getChildByName('final').addChild(socDOMElement);
-        $('.white').fadeTo('slow', 0, function () {
+        $('.white').fadeTo('slow', 0, function() {
           $(this).remove();
         });
       });
 
-      $(document).keydown(function (e) {
+      $(document).keydown(function(e) {
+        console.log(self.container.y);
         switch (e.which) {
-        case 37: // left
-          break;
-        case 38: // up
-          //self.container.y -= 30;
-          break;
-        case 39: // right
-          break;
-        case 40: //down
-          self.container.y += 30;
-          break;
-        default:
-          return;
+          case 37: // left
+            if (left && self.container.y < -self.scrollHeight) {
+              left = false;
+              self.handlePanDown({
+                distance: self.stage.canvas.height / 2
+              });
+            }
+            break;
+          case 38: // up
+            self.container.y -= 30;
+            break;
+          case 39: // right
+            if (!left && self.container.y < -self.scrollHeight) {
+              left = true;
+              self.handlePanDown({
+                distance: self.stage.canvas.height / 2
+              });
+            }
+            break;
+          case 40: //down
+            self.container.y += 30;
+            break;
+          default:
+            return;
         }
         e.preventDefault();
-      });
+      })
       /*createjs.Sound.play("wind", {
         loop: 'infinite'
       });*/
-    });
+      $(this).removeClass('press');
+    }).on('mousedown', function() {
+      $(this).addClass('press');
+    });;
 
-    $('.social-share li').on('click', function (event) {
+    $('.social-share li').on('click', function(event) {
       var provider = $(event.target).data('provider');
       var text = $(event.target).parents('#social-haikus').prev().html();
 
@@ -261,17 +288,20 @@ var Haiku = React.createClass({
       threshold: 0
     });
 
-    mc.on("panup", this.handlePanUp);
-    mc.on("pandown", this.handlePanDown);
-    mc.on("panend", this.handleEnd);
-    mc.on("panstart", this.handleStart);
+    if(this.isMobile()){
+      mc.on("panup", this.handlePanUp);
+      mc.on("pandown", this.handlePanDown);
+      mc.on("panend", this.handleEnd);
+      mc.on("panstart", this.handleStart);
+    }
+    
     window.addEventListener('resize', this.resize, false);
     createjs.Ticker.addEventListener("tick", this.tick);
   },
-  initTexts: function () {
+  initTexts: function() {
     var self = this;
 
-    self.texts.forEach(function (item) {
+    self.texts.forEach(function(item) {
       var txt = new createjs.Text();
       var b = txt.getBounds();
       txt.font = item.typo;
@@ -289,28 +319,32 @@ var Haiku = React.createClass({
       if (self.seasons[$('#' + item.id).data('season')]) {
         txt.y = self.seasons[$('#' + item.id).data('season')].getBounds().height + item.position;
         self.seasons[$('#' + item.id).data('season')].addChild(txt);
-      } else if (item.id === 'tuto') {
+      } else if (item.id === 'tuto' && self.isMobile()) {
         var tuto = self.seasons.summer.getChildByName('tuto'),
           fingersSprite = tuto.getChildByName('fingersSprite');
         fingersSprite.x = tuto.getBounds().width / 2 - fingersSprite.getBounds().width / 2;
         txt.y = 800;
-        self.container.y -= window.innerHeight;
+        tuto.addChild(txt);
+      } else if (!self.isMobile() && item.id === 'desktop') {
+        var tuto = self.seasons.summer.getChildByName('tuto');
+        txt.y = 800;
         tuto.addChild(txt);
       }
+      self.container.y -= window.innerHeight;
     })
   },
 
-  disablePan: function () {
+  disablePan: function() {
     mc.set({
       enable: false
     });
   },
-  enablePan: function () {
+  enablePan: function() {
     mc.set({
       enable: true
     });
   },
-  handlePanDown: function (event) {
+  handlePanDown: function(event) {
 
     this.currentDirection = 'down';
     this.scroll_end = event.distance / 2;
@@ -336,7 +370,7 @@ var Haiku = React.createClass({
     this.moveAssets('up');
     this.setCurrentSeason();
   },
-  handlePanUp: function (event) {
+  handlePanUp: function(event) {
     this.currentDirection = 'up';
     this.scroll_end = event.distance / 2;
     this.num = (event.distance * (this.bkgHeight - this.stage.canvas.height) / this.stage.canvas.height) / this.SCROLL_VELOCITY;
@@ -349,10 +383,10 @@ var Haiku = React.createClass({
     this.moveAssets('down');
     this.setCurrentSeason();
   },
-  handleStart: function () {
+  handleStart: function() {
 
   },
-  handleEnd: function () {
+  handleEnd: function() {
     var self = this;
     if (self.container.y < self.scrollHeight + self.num) {
       self.disablePan();
@@ -361,7 +395,7 @@ var Haiku = React.createClass({
       self.disablePan();
       Tween.get(this.container).to({
         y: 0
-      }, self.END_TOUCH_EVENT, Ease.cubicOut).call(function () {
+      }, self.END_TOUCH_EVENT, Ease.cubicOut).call(function() {
         self.enablePan();
       });
     } else {
@@ -369,7 +403,7 @@ var Haiku = React.createClass({
       this.walking();
       Tween.get(self.container).to({
         y: (self.currentDirection === 'down') ? self.container.y + self.scroll_end : self.container.y - self.scroll_end
-      }, self.END_TOUCH_EVENT, Ease.quadOut).call(function () {
+      }, self.END_TOUCH_EVENT, Ease.quadOut).call(function() {
         if (self.container.y < -self.container.getBounds().height) {
           self.scrollToBottom();
         } else if (self.container.y > 0) {
@@ -379,39 +413,48 @@ var Haiku = React.createClass({
       });
     }
   },
-  setCurrentSeason: function () {
+  setCurrentSeason: function() {
     if (this.checkSeason(this.seasons.winter)) {
       this.currentSeason = 'winter';
+      if (!$('body').hasClass('bkg-winter')) {
+        $('body').addClass('bkg-winter');
+      }
     } else if (this.checkSeason(this.seasons.spring)) {
       this.currentSeason = 'spring';
+      if (!$('body').hasClass('bkg-spring')) {
+        $('body').addClass('bkg-spring');
+      }
     } else if (this.checkSeason(this.seasons.summer)) {
       this.currentSeason = 'summer';
     } else {
       this.currentSeason = 'autumn';
+      if (!$('body').hasClass('bkg-autumn')) {
+        $('body').addClass('bkg-autumn');
+      }
     }
   },
-  scrollToBottom: function () {
+  scrollToBottom: function() {
     var self = this;
     Tween.get(this.container).to({
       y: this.scrollHeight
-    }, self.END_TOUCH_EVENT, Ease.cubicOut).call(function () {
+    }, self.END_TOUCH_EVENT, Ease.cubicOut).call(function() {
       self.enablePan();
       self.gameEnabled = true;
     });
   },
-  scrollToTop: function () {
+  scrollToTop: function() {
     var self = this;
     self.disablePan();
     Tween.get(this.container).to({
       y: 0
-    }, self.END_TOUCH_EVENT, Ease.cubicOut).call(function () {
+    }, self.END_TOUCH_EVENT, Ease.cubicOut).call(function() {
       self.enablePan();
     });
   },
-  moveAssets: function (vertical) {
+  moveAssets: function(vertical) {
     var self = this;
 
-    self.collection.forEach(function (item) {
+    self.collection.forEach(function(item) {
       if (self.isOnScreen(item) && vertical === 'up') {
 
         if (item.posX > item.destX) {
@@ -440,73 +483,91 @@ var Haiku = React.createClass({
       }
     })
   },
-  moveAssetToLeft: function (target, max) {
+  moveAssetToLeft: function(target, max) {
     if (target.x >= max) {
       Tween.get(target).to({
         x: (target.x - this.ASSET_MOVEMENT)
       }, 0, Ease.cubicOut);
     }
   },
-  moveAssetToRight: function (target, max) {
+  moveAssetToRight: function(target, max) {
     if (target.x <= max) {
       Tween.get(target).to({
         x: (target.x + this.ASSET_MOVEMENT)
       }, 0, Ease.cubicOut);
     }
   },
-  moveAssetToUp: function (target, max) {
+  moveAssetToUp: function(target, max) {
     if (target.y >= max) {
       Tween.get(target).to({
         y: (target.y - this.ASSET_MOVEMENT)
       }, 0, Ease.cubicOut);
     }
   },
-  moveAssetToDown: function (target, max) {
-    console.log(target.name)
+  moveAssetToDown: function(target, max) {
     if (target.y <= max) {
       Tween.get(target).to({
         y: (target.y + this.ASSET_MOVEMENT)
       }, 0, Ease.cubicOut);
     }
   },
-  walking: function () {
+  walking: function() {
     var footsteps = this.seasons[this.currentSeason].getChildByName('walk');
-    footsteps.mask.y = -(this.container.y + 15000 + this.stage.canvas.height / 2);
-    Tween.get(footsteps.mask).to({
-      y: -(this.container.y + 15000 + this.stage.canvas.height / 2)
-    }, self.END_TOUCH_EVENT, Ease.quadOut);
+    var otherSeasons = 0;
+    switch (this.currentSeason) {
+      case 'summer':
+        otherSeasons = 15000;
+        break;
+      case 'autumn':
+        otherSeasons = 10000;
+        break;
+      case 'winter':
+        otherSeasons = 5000;
+        break;
+      case 'spring':
+        otherSeasons = 0;
+        break;
+    }
+    footsteps.mask.y = -(this.container.y + otherSeasons + this.stage.canvas.height / 2);
   },
-  tick: function () {
+  tick: function() {
     this.fall();
     this.stage.update(event);
   },
-  changeMovement: function () {
+  changeMovement: function() {
     for (var i = 0; i < this.PARTICLES_NUMBER; i++) {
       this.seasons[this.currentSeason].particles[i].xSpeed *= -1;
     }
   },
-  fall: function () {
-    var season = this.seasons[this.currentSeason];
-    for (var i = 0; i < season.particles.length; i++) {
-      season.particles[i].x += season.particles[i].xSpeed;
-      season.particles[i].y += season.particles[i].vel;
-      (i % 2 === 0) ? season.particles[i].rotation += Math.floor((Math.random() * 2) + 1) : season.particles[i].rotation -= Math.floor((Math.random() * 2) + 1);
-      if (season.particles[i].y > season.getBounds().height || season.particles[i].x > this.stage.canvas.width || season.particles[i].x < 0) {
-        season.particles[i].x = Math.random() * this.stage.canvas.width;
-        season.particles[i].y = 0;
+  fall: function() {
+    var particleSeasons = [this.seasons.autumn, this.seasons.winter];
+    for (var aSeason in particleSeasons) {
+      var season = particleSeasons[aSeason]
+      for (var i = 0; i < season.particles.length; i++) {
+        season.particles[i].x += season.particles[i].xSpeed;
+        season.particles[i].y += season.particles[i].vel;
+        (i % 2 === 0) ? season.particles[i].rotation += Math.floor((Math.random() * 2) + 1) : season.particles[i].rotation -= Math.floor((Math.random() * 2) + 1);
+        if (season.particles[i].y > season.getBounds().height || season.particles[i].x > this.stage.canvas.width || season.particles[i].x < 0) {
+          season.particles[i].x = Math.random() * this.stage.canvas.width;
+          season.particles[i].y = 0;
+        }
       }
     }
   },
-  displayGems: function () {
+  displayGems: function() {
     var gems = document.getElementById("gems");
     var gemsDOMElement = new DOMElement(gems);
     var finalScreen = this.container.getChildByName('final');
     var index = 1;
-    var collect = function (event) {
+    var collect = function(event) {
       $('#' + event.target.id).addClass(event.target.id);
       Tween.get(event.target).to({
         alpha: 0
       }, 500, Ease.cubicOut);
+      $('#' + event.target.id).popover({
+        html: true,
+        container: '.center'
+      });
     };
     for (var season in this.seasons) {
       var gemId = 'gem' + index;
@@ -518,36 +579,25 @@ var Haiku = React.createClass({
       gem.y = $('#' + gemId).data('y');
       gem.on('click', collect);
       this.seasons[$('#' + gemId).data('season')].addChild(gem);
-    };
-
-    $('[data-toggle="popover"]').popover({
-      html: true,
-      container: 'aside'
-    });
+    }
     finalScreen.addChild(gemsDOMElement);
     gemsDOMElement.y = 300;
   },
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       data: []
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function() {
     var soc = $("#social-haikus"),
       self = this;
     self.stage = new createjs.Stage('haiku');
     createjs.Touch.enable(this.stage);
     createjs.Ticker.setFPS(24);
-    $('.gem').on('show.bs.popover', function () {
-      $('[data-toggle="popover"]').popover('hide');
-    }).on('shown.bs.popover', function () {
-      soc.show();
-      $('.popover').append(soc);
-    });
     $.ajax({
       url: 'assets/assets.json',
       dataType: 'json',
-      success: function (data) {
+      success: function(data) {
         this.setState({
           data: data
         });
@@ -555,28 +605,29 @@ var Haiku = React.createClass({
         self.animations = this.state.data.animations;
         self.texts = this.state.data.texts;
       }.bind(this),
-      error: function (xhr, status, err) {
+      error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
   },
-  socShare: function (socialMedia, text) {
+  socShare: function(socialMedia, text) {
     var socialMediaUrl;
     switch (socialMedia) {
-    case 'facebook':
-      socialMediaUrl = "http://www.facebook.com/sharer.php?u=" + text;
-      break;
-    case 'twitter':
-      socialMediaUrl = "http://twitter.com/home?status=" + text;
-      break;
-    case 'pinterest':
-      socialMediaUrl = "https://pinterest.com/pin/create/button/?url=" + encodeURIComponent(window.location.href) + "&media=" + window.location.href + "/assets/post_pinterest.jpg&description=" + text;
-      break;
+      case 'facebook':
+        socialMediaUrl = "http://www.facebook.com/sharer.php?u=" + text;
+        break;
+      case 'twitter':
+        socialMediaUrl = "http://twitter.com/home?status=" + text;
+        break;
+      case 'pinterest':
+        socialMediaUrl = "https://pinterest.com/pin/create/button/?url=" + encodeURIComponent(window.location.href) + "&media=" + window.location.href + "/assets/post_pinterest.jpg&description=" + text;
+        break;
     }
     window.open(socialMediaUrl, socialMedia, "toolbar=0,status=0,width=900,height=626");
   },
-  render: function () {
+  render: function() {
     if (!this.isMobile()) {
+      $('footer').show();
       $('header,#wrapper').width((640 * window.innerHeight) / 1136);
     }
     return React.DOM.canvas({
