@@ -60,7 +60,7 @@ var Haiku = React.createClass({
   },
   handleComplete: function() {
     $('.loader').remove();
-    $('.js-btn-start').addClass('block');
+    $('.js-btn-start').show();
     this.initSeasons();
     this.initSize();
     this.initWalk();
@@ -288,28 +288,29 @@ var Haiku = React.createClass({
       threshold: 0
     });
 
-    if(this.isMobile()){
+    if (this.isMobile()) {
       mc.on("panup", this.handlePanUp);
       mc.on("pandown", this.handlePanDown);
       mc.on("panend", this.handleEnd);
       mc.on("panstart", this.handleStart);
     }
-    
+
     window.addEventListener('resize', this.resize, false);
     createjs.Ticker.addEventListener("tick", this.tick);
   },
   initTexts: function() {
     var self = this;
+    var shadow = new createjs.Shadow("#000000", 2, 2, 10);
 
     self.texts.forEach(function(item) {
       var txt = new createjs.Text();
       var b = txt.getBounds();
       txt.font = item.typo;
       txt.color = item.color;
-      txt.textAlign = 'center';
       txt.lineWidth = self.stage.canvas.width;
       txt.x = self.stage.canvas.width / 2;
       txt.name = item.name;
+      txt.shadow = shadow;
       if (!item.text) {
         var regex = /<br\s*[\/]?>/gi;
         txt.text = $('#' + item.id).data('content').replace(regex, '\n');
@@ -324,13 +325,21 @@ var Haiku = React.createClass({
           fingersSprite = tuto.getChildByName('fingersSprite');
         fingersSprite.x = tuto.getBounds().width / 2 - fingersSprite.getBounds().width / 2;
         txt.y = 800;
+        txt.textAlign = 'center';
         tuto.addChild(txt);
       } else if (!self.isMobile() && item.id === 'desktop') {
         var tuto = self.seasons.summer.getChildByName('tuto');
         txt.y = 800;
+        txt.textAlign = 'center';
         tuto.addChild(txt);
+      } else {
+        console.log(item.id)
+        txt.textAlign = 'left';
+        txt.x = 10;
       }
+
       self.container.y -= window.innerHeight;
+
     })
   },
 

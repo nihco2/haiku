@@ -102,25 +102,6 @@ canvas{
   z-index: 2;
 }
 
-.btn-start {
-  background: url('../assets/btn_start.png') no-repeat;
-  background-size:contain;
-  display: none;
-  width: 125px;
-  height: 125px;
-  margin: 0 auto;
-  position: relative;
-  top: 60%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  cursor: pointer;
-}
-.btn-start.press{
-  width: 120px;
-  height: 120px;
-}
-.block {
-  display: block;
-}
 #wrapper {
   max-width: 640px;
   position: relative;
@@ -131,39 +112,53 @@ canvas{
   opacity: 0;
   cursor: move;
 }
-.block {
-  display: block;
-}
-
 .loader {
-  font-size: 10px;
   margin: 0 auto;
   position: absolute;
-  top: 60%;
+  top: 70%;
   left: 50%;
-  text-align: center;
-  font-size: 20px;
-  padding-top: 50px;
-  margin-left: -15px;
+  width: 125px;
+  height: 125px;
+  margin-left: -20px;
   color:#fff;
-  font-family: 'Coustard';
+  font-family: 'Amatic SC';
+  font-size: 35px;
+  line-height: 30px;
+  text-align: left;
 }
 
-.rotating:before {
-  content:"-";
+.loader:before {
+  content:"---";
   font-size: 0px;
   position: absolute;
-  text-align: center;
   width: 125px;
   height: 125px;
   margin-top: -50px;
-  margin-left: -50px;
+  margin-left: -40px;
   background: url('../assets/loading_circle.png');
   background-size:contain;
   animation: rotating 2s linear infinite;
   -webkit-animation: rotating 2s linear infinite;
 }
-
+.btn-start {
+  background: url('../assets/btn_start.png') no-repeat;
+  background-size:contain;
+  display: none;
+  width: 125px;
+  height: 125px;
+  margin: 0 auto;
+  position: absolute;
+  top: 70%;
+  left:50%;
+  margin-top: -50px;
+  margin-left: -60px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  cursor: pointer;
+}
+.btn-start.press{
+  width: 120px;
+  height: 120px;
+}
 nav{
   position: absolute;
   bottom:30px;
@@ -192,10 +187,15 @@ nav{
 
 .credits{
   width: 100%;
+  font-family: 'Amatic SC';
+  font-size: 20px;
   position: absolute;
   text-align: center;
   display: block;
   bottom:5px;
+  color:white;
+}
+.credits:hover{
   color:white;
 }
 
@@ -223,7 +223,7 @@ nav li,#social-haikus li{
 
 #gems p{
   text-align: center;
-  font-family: 'Coustard';
+  font-family: 'Antic Slab';
 }
 
 aside{

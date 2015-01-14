@@ -245,39 +245,39 @@
   }],
   "texts": [{
     "id": "gem1",
-    "typo": "30px Coustard",
+    "typo": "30px Antic Slab",
     "color": "#fff",
     "name": "haiku1",
     "position": -1350
   }, {
     "id": "gem2",
-    "typo": "30px Coustard",
+    "typo": "30px Antic Slab",
     "color": "#fff",
     "name": "haiku2",
     "position": -600
   }, {
     "id": "gem3",
-    "typo": "30px Coustard",
+    "typo": "30px Antic Slab",
     "color": "#fff",
     "name": "haiku3",
     "position": -800
   }, {
     "id": "gem4",
-    "typo": "30px Coustard",
+    "typo": "30px Antic Slab",
     "color": "#fff",
     "name": "haiku4",
     "position": -200
   }, {
     "text": "Posez votre téléphone ou tablette sur une surface plane et utilisez vos deux doigts\npour marcher sur l\"écran et démarrer\nvotre voyage...",
     "id": "tuto",
-    "typo": "30px Coustard",
+    "typo": "30px Antic Slab",
     "name": "tuto",
     "color": "#fff",
     "position": 0
   }, {
-    "text": "Utilisez les flèches gauche et droite de votre clavier pour avancer un pas après l'autre...",
+    "text": "Utilisez les flèches gauche et droite\nde votre clavierpour avancer\nun pas après l'autre...",
     "id": "desktop",
-    "typo": "30px Coustard",
+    "typo": "30px Antic Slab",
     "name": "tuto",
     "color": "#fff",
     "position": 0
