@@ -178,7 +178,8 @@ nav{
   background: url('../assets/btn_pinterest.png') no-repeat;
   background-size: contain;
 }
-#social-haikus{
+
+.social-share{
   width: 130px;
   float: right;
   display: none;
@@ -209,7 +210,7 @@ nav{
   line-height: 1;
   padding-top: 5px;
 }
-nav li,#social-haikus li{
+nav li,.social-share li{
   list-style-type: none;
   height: 30px;
   width: 30px;

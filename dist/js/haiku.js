@@ -13,6 +13,7 @@ var Haiku = React.createClass({
   currentDirection: 'down',
   num: 0,
   it: 0,
+  collectedGems: 0,
   scroll_end: 0,
   FOOTSTEPS: 60,
   SCROLL_VELOCITY: 200,
@@ -136,7 +137,7 @@ var Haiku = React.createClass({
       tuto.getChildByName('fingersSprite').y = tuto.getBounds().height / 2 - tuto.getChildByName('fingersSprite').getBounds().height;
     }
 
-    this.scrollToBottom();
+    //this.scrollToBottom();
   },
   initAssets: function() {
     var self = this,
@@ -323,6 +324,7 @@ var Haiku = React.createClass({
         txt.x = self.stage.canvas.width / 2 - txt.getBounds().width / 2;
         txt2.textAlign = 'right';
         txt2.text = $('#' + item.id).data('author');
+        console.log(txt2.text);
         txt2.font = item.typo;
         txt2.color = item.color;
         txt2.lineWidth = self.stage.canvas.width;
@@ -572,6 +574,7 @@ var Haiku = React.createClass({
     var gemsDOMElement = new DOMElement(gems);
     var finalScreen = this.container.getChildByName('final');
     var index = 1;
+    var self = this;
     var collect = function(event) {
       $('#' + event.target.id).addClass(event.target.id);
       Tween.get(event.target).to({
@@ -580,6 +583,11 @@ var Haiku = React.createClass({
       $('#' + event.target.id).popover({
         html: true,
         container: '.center'
+      }).on('shown.bs.popover', function() {
+        console.log($(this).find('.social-share'));
+        $(this).find('.social-share').appendTo('.popover').show();
+      }).on('show.bs.popover', function() {
+        $('[data-toggle="popover"]').popover('hide');
       });
     };
     for (var season in this.seasons) {
@@ -602,11 +610,11 @@ var Haiku = React.createClass({
     };
   },
   componentDidMount: function() {
-    var soc = $("#social-haikus"),
-      self = this;
+    var self = this;
     self.stage = new createjs.Stage('haiku');
     createjs.Touch.enable(this.stage);
     createjs.Ticker.setFPS(24);
+
     $.ajax({
       url: 'assets/assets.json',
       dataType: 'json',
