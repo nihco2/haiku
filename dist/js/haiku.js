@@ -318,8 +318,16 @@ var Haiku = React.createClass({
         txt.text = item.text;
       }
       if (self.seasons[$('#' + item.id).data('season')]) {
-        txt.y = self.seasons[$('#' + item.id).data('season')].getBounds().height + item.position;
+        var txt2 = new createjs.Text();
+        txt.y = txt2.y = self.seasons[$('#' + item.id).data('season')].getBounds().height + item.position;
+        txt.x = self.stage.canvas.width / 2 - txt.getBounds().width / 2;
+        txt2.textAlign = 'right';
+        txt2.text = $('#' + item.id).data('author');
+        txt2.font = item.typo;
+        txt2.color = item.color;
+        txt2.lineWidth = self.stage.canvas.width;
         self.seasons[$('#' + item.id).data('season')].addChild(txt);
+        self.seasons[$('#' + item.id).data('season')].addChild(txt2);
       } else if (item.id === 'tuto' && self.isMobile()) {
         var tuto = self.seasons.summer.getChildByName('tuto'),
           fingersSprite = tuto.getChildByName('fingersSprite');
@@ -332,10 +340,6 @@ var Haiku = React.createClass({
         txt.y = 800;
         txt.textAlign = 'center';
         tuto.addChild(txt);
-      } else {
-        console.log(item.id)
-        txt.textAlign = 'left';
-        txt.x = 10;
       }
 
       self.container.y -= window.innerHeight;
