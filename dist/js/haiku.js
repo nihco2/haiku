@@ -137,7 +137,7 @@ var Haiku = React.createClass({
       tuto.getChildByName('fingersSprite').y = tuto.getBounds().height / 2 - tuto.getChildByName('fingersSprite').getBounds().height;
     }
 
-    //this.scrollToBottom();
+    this.scrollToBottom();
   },
   initAssets: function() {
     var self = this,
@@ -174,7 +174,21 @@ var Haiku = React.createClass({
       shape.graphics.beginFill("#ff0000").drawRect(0, 0, this.container.getBounds().width, this.seasons[season].getBounds().height);
       shape.y = this.seasons[season].getBounds().height;
       walk.mask = shape;
-      walk.x = 120;
+      switch (season) {
+        case 'summer':
+          walk.x = 130;
+          break;
+        case 'autumn':
+          walk.x = 170;
+          break;
+        case 'winter':
+          walk.x = 110;
+          break;
+        case 'spring':
+          walk.x = 150;
+          break;
+      }
+
       this.seasons[season].addChild(walk);
     }
   },
@@ -314,20 +328,24 @@ var Haiku = React.createClass({
       txt.shadow = shadow;
       if (!item.text) {
         var regex = /<br\s*[\/]?>/gi;
-        txt.text = $('#' + item.id).find('content').replace(regex, '\n');
+        console.log($('#' + item.id).find('.content #haiku1'))
+        txt.text = $('#' + item.id).find('.content p').html().replace(regex, '\n');
       } else {
         txt.text = item.text;
       }
       if (self.seasons[$('#' + item.id).data('season')]) {
         var txt2 = new createjs.Text();
-        txt.y = txt2.y = self.seasons[$('#' + item.id).data('season')].getBounds().height + item.position;
+        txt.y = self.seasons[$('#' + item.id).data('season')].getBounds().height + item.position;
+        txt2.y = txt.y + txt.getBounds().height;
         txt.x = self.stage.canvas.width / 2 - txt.getBounds().width / 2;
-        txt2.textAlign = 'right';
-        txt2.text = $('#' + item.id).data('author');
-        console.log(txt2.text);
+        txt2.text = $('#' + item.id).find('.content p.author').text();
         txt2.font = item.typo;
         txt2.color = item.color;
         txt2.lineWidth = self.stage.canvas.width;
+        txt2.x = self.stage.canvas.width - $('#' + item.id).find('.content p.author').width() - 100;
+        txt2.textAlign = 'right';
+        txt2.shadow = shadow;
+
         self.seasons[$('#' + item.id).data('season')].addChild(txt);
         self.seasons[$('#' + item.id).data('season')].addChild(txt2);
       } else if (item.id === 'tuto' && self.isMobile()) {
