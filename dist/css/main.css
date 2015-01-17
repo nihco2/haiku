@@ -180,10 +180,13 @@ nav{
 }
 
 .social-share{
-  width: 130px;
+ /* width: 130px;*/
   float: right;
-  display: none;
   margin-bottom: 2px;
+}
+
+.content{
+  display: none;
 }
 
 .credits{

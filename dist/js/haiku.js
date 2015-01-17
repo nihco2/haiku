@@ -314,7 +314,7 @@ var Haiku = React.createClass({
       txt.shadow = shadow;
       if (!item.text) {
         var regex = /<br\s*[\/]?>/gi;
-        txt.text = $('#' + item.id).data('content').replace(regex, '\n');
+        txt.text = $('#' + item.id).find('content').replace(regex, '\n');
       } else {
         txt.text = item.text;
       }
@@ -576,18 +576,22 @@ var Haiku = React.createClass({
     var index = 1;
     var self = this;
     var collect = function(event) {
-      $('#' + event.target.id).addClass(event.target.id);
+      var soc = $('#' + event.target.id).find('.content');
+      $('#' + event.target.id).addClass(event.target.id).addClass('gemEnabled');
       Tween.get(event.target).to({
         alpha: 0
       }, 500, Ease.cubicOut);
       $('#' + event.target.id).popover({
         html: true,
-        container: '.center'
-      }).on('shown.bs.popover', function() {
-        console.log($(this).find('.social-share'));
-        $(this).find('.social-share').appendTo('.popover').show();
+        container: '.center',
+        content: function() {
+          return soc.show();
+        }
+      }).on('hidde.bs.popover', function() {
+        $('#' + event.target.id).append(soc.hide())
       }).on('show.bs.popover', function() {
-        $('[data-toggle="popover"]').popover('hide');
+        console.log(event.target.id);
+        $('.gemEnabled').popover('hide');
       });
     };
     for (var season in this.seasons) {
