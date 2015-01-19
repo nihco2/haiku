@@ -56,6 +56,9 @@ fieldset {
 textarea {
   resize: vertical;
 }
+a {
+   outline: 0;
+}
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -199,10 +202,88 @@ nav{
   bottom:5px;
   color:white;
 }
-.credits:hover{
+.credits:hover,.credits2:hover{
   color:white;
+  outline: none;
 }
 
+#final{
+  text-align: center;
+}
+
+#final .social-share{
+  float: none;
+}
+#final .restart{
+  display: inline-block;
+  font-family: 'Amatic SC';
+  color:white;
+  border-top: white 1px dotted;
+  border-bottom: white 1px dotted;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+#final .credits2{
+  color:white;
+  font-family: 'Amatic SC';
+  font-size: 20px;
+}
+
+.modal-content,#warning{
+  text-align: center;
+  color:#a48652;
+}
+
+.modal-content .line{
+  width: 90%;
+}
+
+.modal-content h2{
+  font-family: 'Amatic SC';
+}
+
+.modal-content p{
+  font-size: 12px;
+}
+
+.modal-content .cr-logo{
+  float: left;
+  width: 40%;
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+#warning p{
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-top: 10px;
+}
+
+.continue{
+  display: inline-block;
+  font-family: 'Amatic SC';
+  color:#a48652;
+  border-bottom: #a48652 1px dotted;
+  cursor: pointer;
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+.continue:hover{
+  color:#a48652;
+  text-decoration: none;
+}
+
+.cf{
+  overflow: hidden;
+}
+
+.cross{
+  position: absolute;
+  top:5px;
+  right: 5px;
+}
 .popover{
   width: 97%;
   max-width: 320px;
@@ -224,10 +305,16 @@ nav li,.social-share li{
 #gems{
   display: none;
 }
-
-#gems p{
-  text-align: center;
+#gems .content{
+  text-align: left;
   font-family: 'Antic Slab';
+  font-size: 15px;
+}
+#gems .season-share{
+  text-align: center;
+  font-family: 'Amatic SC';
+  text-transform: uppercase;
+  font-size: 30px;
 }
 
 aside{

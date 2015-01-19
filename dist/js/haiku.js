@@ -136,8 +136,7 @@ var Haiku = React.createClass({
     if (this.isMobile()) {
       tuto.getChildByName('fingersSprite').y = tuto.getBounds().height / 2 - tuto.getChildByName('fingersSprite').getBounds().height;
     }
-
-    this.scrollToBottom();
+    //this.scrollToBottom();
   },
   initAssets: function() {
     var self = this,
@@ -591,6 +590,8 @@ var Haiku = React.createClass({
     var gems = document.getElementById("gems");
     var gemsDOMElement = new DOMElement(gems);
     var finalScreen = this.container.getChildByName('final');
+    var finalShare = document.getElementById("final");
+    var finalDOMElement = new DOMElement(finalShare);
     var index = 1;
     var self = this;
     var collect = function(event) {
@@ -605,10 +606,13 @@ var Haiku = React.createClass({
         content: function() {
           return soc.show();
         }
-      }).on('hidde.bs.popover', function() {
-        $('#' + event.target.id).append(soc.hide())
+      }).on('hide.bs.popover', function() {
+        $('#' + event.target.id).append(soc.hide());
+        if ($('.popover').length === 1) {
+          $('#final').show();
+        }
       }).on('show.bs.popover', function() {
-        console.log(event.target.id);
+        $('#final').hide();
         $('.gemEnabled').popover('hide');
       });
     };
@@ -623,7 +627,10 @@ var Haiku = React.createClass({
       gem.on('click', collect);
       this.seasons[$('#' + gemId).data('season')].addChild(gem);
     }
+    finalDOMElement.x = this.stage.canvas.width / 4 - $('#final').width() / 2;
+    finalDOMElement.y = 400;
     finalScreen.addChild(gemsDOMElement);
+    finalScreen.addChild(finalDOMElement);
     gemsDOMElement.y = 300;
   },
   getInitialState: function() {
@@ -652,6 +659,16 @@ var Haiku = React.createClass({
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
+    $('.cross').on('click', function() {
+      $('#credits').modal('hide');
+    });
+    if (!this.isMobile()) {
+      $('#warning').modal();
+      $('.continue').on('click', function() {
+        $('#warning').modal('hide');
+      });
+    }
+    $('.restart').on('click', this.scrollToBottom);
   },
   socShare: function(socialMedia, text) {
     var socialMediaUrl;
