@@ -209,10 +209,16 @@ nav{
 
 #final{
   text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
+  position:  relative !important;
+  z-index: 1;
 }
 
 #final .social-share{
   float: none;
+  width: 194px;
+  margin: 0 auto;
 }
 #final .restart{
   display: inline-block;
@@ -285,8 +291,9 @@ nav{
   right: 5px;
 }
 .popover{
-  width: 97%;
+  width: 95%;
   max-width: 320px;
+  left:8px !important;
 }
 
 .popover-content{
@@ -316,11 +323,16 @@ nav li,.social-share li{
   text-transform: uppercase;
   font-size: 30px;
 }
+#gems .social-share{
+  position: absolute;
+  right: 5px;
+}
 
 aside{
   max-width: 640px;
   margin: 0 auto;
   position:  relative !important;
+  z-index: 2;
 }
 .center{
   max-width: 320px;
