@@ -293,7 +293,6 @@ nav{
 .popover{
   width: 95%;
   max-width: 320px;
-  left:8px !important;
 }
 
 .popover-content{
