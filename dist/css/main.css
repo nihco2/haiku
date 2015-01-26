@@ -272,6 +272,9 @@ nav{
   margin-left: 38px;
 }
 
+#warning .modal-dialog{
+  margin-top:25%;
+}
 #warning p{
   padding-left: 20px;
   padding-right: 20px;
