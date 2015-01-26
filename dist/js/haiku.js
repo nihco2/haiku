@@ -9,20 +9,20 @@ var Haiku = React.createClass({
   animations: [],
   collection: [],
   seasons: {},
-  previousSeason: 'autumn',
+  previousSeason: 'summer',
   currentSeason: 'summer',
   currentDirection: 'down',
   num: 0,
   it: 0,
   collectedGems: 0,
   scroll_end: 0,
-  FOOTSTEPS: 60,
-  SCROLL_VELOCITY: 200,
+  SCROLL_VELOCITY: 300,
   ASSET_MOVEMENT: 4,
   RUN_LIMIT: 1000,
   PARTICLES_SPEED: 3,
   SNOW_SIZE: 7,
-  PARTICLES_NUMBER: 40,
+  PARTICLES_NUMBER_WINTER: 40,
+  PARTICLES_NUMBER_AUTUMN: 15,
   END_TOUCH_EVENT: 500,
   PARTICLES_TIME_CHANGE_DIRECTION: 20000, //miliseconds
   SNOW_COLOR: {
@@ -39,6 +39,9 @@ var Haiku = React.createClass({
   },
   isMobile: function() {
     return (/Mobile|Android|iPhone|iPod|BlackBerry|Windows Phone/i).test(navigator.userAgent || navigator.vendor || window.opera) ? true : false;
+  },
+  isOldMobile: function() {
+    return navigator.userAgent.match(/iPhone/i) !== null && window.screen.height <= (960 / 2);
   },
   isOnScreen: function(el) {
     var elTop = this.seasons[el.season].localToGlobal(el.x, el.y).y;
@@ -70,7 +73,9 @@ var Haiku = React.createClass({
     this.initListeners();
     this.initTexts();
     this.displayGems();
-    this.initParticles(this.PARTICLES_SPEED, this.PARTICLES_NUMBER);
+    if (!this.isOldMobile()) {
+      this.initParticles(this.PARTICLES_SPEED);
+    }
   },
   initSeasons: function() {
     var seasons = [],
@@ -105,7 +110,6 @@ var Haiku = React.createClass({
         var tutoContainer = new createjs.Container();
         tutoContainer.addChild(tutoBkg);
         tutoContainer.name = 'tuto';
-
         self.seasons.summer.addChild(tutoContainer);
         tutoContainer.y = self.seasons.summer.getBounds().height;
         if (!self.isMobile()) {
@@ -116,6 +120,12 @@ var Haiku = React.createClass({
         } else {
           tutoContainer.addChild(fingersSprite);
         }
+      } else if (season.name === 'autumn') {
+        self.seasons[season.name].particlesNumber = self.PARTICLES_NUMBER_AUTUMN;
+        self.seasons[season.name].particleEnabled = true;
+      } else if (season.name === 'winter') {
+        self.seasons[season.name].particlesNumber = self.PARTICLES_NUMBER_WINTER;
+        self.seasons[season.name].particleEnabled = true;
       }
       (index > 0) ? bitmapContainer.y = self.container.getBounds().height - 1 : bitmapContainer.y = finalContainer.getBounds().height;
     })
@@ -130,13 +140,13 @@ var Haiku = React.createClass({
       this.stage.canvas.height = window.innerHeight * (this.stage.canvas.width / $('#wrapper').width());
       $('#haiku').width($('#wrapper').width);
     } else {
+      $('#haiku').width(window.innerWidth)
       this.stage.canvas.height = window.innerHeight * (this.stage.canvas.width / window.innerWidth);
+      tuto.getChildByName('fingersSprite').y = tuto.getBounds().height / 2 - tuto.getChildByName('fingersSprite').getBounds().height + 40;
     }
     this.bkgHeight = this.container.getBounds().height;
     this.scrollHeight = -this.bkgHeight + this.stage.canvas.height;
-    if (this.isMobile()) {
-      tuto.getChildByName('fingersSprite').y = tuto.getBounds().height / 2 - tuto.getChildByName('fingersSprite').getBounds().height;
-    }
+
     this.scrollToBottom();
   },
   initAssets: function() {
@@ -174,58 +184,46 @@ var Haiku = React.createClass({
       shape.graphics.beginFill("#ff0000").drawRect(0, 0, this.container.getBounds().width, this.seasons[season].getBounds().height);
       shape.y = this.seasons[season].getBounds().height;
       walk.mask = shape;
-      switch (season) {
-        case 'summer':
-          walk.x = 130;
-          break;
-        case 'autumn':
-          walk.x = 170;
-          break;
-        case 'winter':
-          walk.x = 110;
-          break;
-        case 'spring':
-          walk.x = 150;
-          break;
-      }
-
       this.seasons[season].addChild(walk);
     }
   },
 
-  initParticles: function(speed, particlesNumber) {
+  initParticles: function(speed) {
     var timer = setInterval(this.changeMovement, this.PARTICLES_TIME_CHANGE_DIRECTION);
+
     for (var season in this.seasons) {
-      for (var i = 0; i < particlesNumber; i++) {
-        var particle = {};
-        switch (season) {
-          case 'winter':
-            var g = new createjs.Graphics();
-            particle = new createjs.Shape(g);
-            g.beginFill(createjs.Graphics.getRGB(this.SNOW_COLOR.red, this.SNOW_COLOR.green, this.SNOW_COLOR.blue));
-            g.drawCircle(0, 0, this.SNOW_SIZE);
-            break;
-          case 'spring':
-            particle = new createjs.Container();
-            break;
-          case 'autumn':
-            particle = new createjs.Bitmap(this.queue.getResult('feuille'));
-            particle.scaleX = particle.scaleY = 0.8;
-            break;
-          case 'summer':
+      if (this.seasons[season].particlesNumber) {
+        for (var i = 0; i < this.seasons[season].particlesNumber; i++) {
+          var particle = {};
+          switch (season) {
+            case 'winter':
+              var g = new createjs.Graphics();
+              particle = new createjs.Shape(g);
+              g.beginFill(createjs.Graphics.getRGB(this.SNOW_COLOR.red, this.SNOW_COLOR.green, this.SNOW_COLOR.blue));
+              g.drawCircle(0, 0, this.SNOW_SIZE);
+              break;
+            case 'spring':
+              particle = new createjs.Container();
+              break;
+            case 'autumn':
+              particle = new createjs.Bitmap(this.queue.getResult('feuille'));
+              particle.scaleX = particle.scaleY = 0.8;
+              break;
+            case 'summer':
 
-            particle = new createjs.Container();
-            break;
+              particle = new createjs.Container();
+              break;
+          }
+
+          particle.vel = (Math.random() * speed) + 0.5;
+          particle.xSpeed = Math.floor(Math.random() * (0.5 - -0.5 + 1)) + -0.5;
+          particle.scaleX = (Math.random() * 1) + 0.3;
+          particle.scaleY = particle.scaleX;
+          particle.x = Math.random() * this.stage.canvas.width;
+          particle.y = Math.random() * this.seasons[season].getBounds().height;
+          this.seasons[season].addChild(particle);
+          this.seasons[season].particles.push(particle);
         }
-
-        particle.vel = (Math.random() * speed) + 0.5;
-        particle.xSpeed = Math.floor(Math.random() * (0.5 - -0.5 + 1)) + -0.5;
-        particle.scaleX = (Math.random() * 1) + 0.3;
-        particle.scaleY = particle.scaleX;
-        particle.x = Math.random() * this.stage.canvas.width;
-        particle.y = Math.random() * this.seasons[season].getBounds().height;
-        this.seasons[season].addChild(particle);
-        this.seasons[season].particles.push(particle);
       }
     }
   },
@@ -239,8 +237,8 @@ var Haiku = React.createClass({
       $('.white').show().fadeTo('slow', 1, function() {
         $('#gems').show();
         $('#wrapper').show().fadeTo('slow', 1);
-        $('header,footer').remove();
-
+        $('header').remove();
+        $('#final').show();
         self.container.getChildByName('final').addChild(socDOMElement);
         $('.white').fadeTo('slow', 0, function() {
           $(this).remove();
@@ -258,7 +256,6 @@ var Haiku = React.createClass({
             }
             break;
           case 38: // up
-            self.container.y -= 30;
             break;
           case 39: // right
             if (!left && self.container.y < -self.scrollHeight) {
@@ -269,7 +266,6 @@ var Haiku = React.createClass({
             }
             break;
           case 40: //down
-            self.container.y += 30;
             break;
           default:
             return;
@@ -286,13 +282,9 @@ var Haiku = React.createClass({
 
     $('.social-share li').on('click', function(event) {
       var provider = $(event.target).data('provider');
-      var text = $(event.target).parents('#social-haikus').prev().html();
-
+      var text = $(event.target).data('haiku');
       if (!text) {
-        text = $('h1').text();
-      } else {
-        var regex = /<br\s*[\/]?>/gi;
-        text = text.replace(regex, ' ');
+        text = null;
       }
       self.socShare(provider, text);
     });
@@ -314,8 +306,6 @@ var Haiku = React.createClass({
   },
   initTexts: function() {
     var self = this;
-    var shadow = new createjs.Shadow("#000000", 2, 2, 10);
-
     self.texts.forEach(function(item) {
       var txt = new createjs.Text();
       var b = txt.getBounds();
@@ -324,7 +314,7 @@ var Haiku = React.createClass({
       txt.lineWidth = self.stage.canvas.width;
       txt.x = self.stage.canvas.width / 2;
       txt.name = item.name;
-      txt.shadow = shadow;
+
       if (!item.text) {
         var regex = /<br\s*[\/]?>/gi;
         txt.text = $('#' + item.id).find('.content p').html().replace(regex, '\n');
@@ -342,7 +332,6 @@ var Haiku = React.createClass({
         txt2.lineWidth = self.stage.canvas.width;
         txt2.x = self.stage.canvas.width - $('#' + item.id).find('.content p.author').width() - 100;
         txt2.textAlign = 'right';
-        txt2.shadow = shadow;
 
         self.seasons[$('#' + item.id).data('season')].addChild(txt);
         self.seasons[$('#' + item.id).data('season')].addChild(txt2);
@@ -447,11 +436,13 @@ var Haiku = React.createClass({
   setCurrentSeason: function() {
     if (this.checkSeason(this.seasons.winter)) {
       this.currentSeason = 'winter';
+      this.previousSeason = 'autumn';
       if (!$('body').hasClass('bkg-winter')) {
         $('body').addClass('bkg-winter');
       }
     } else if (this.checkSeason(this.seasons.spring)) {
       this.currentSeason = 'spring';
+      this.previousSeason = 'winter';
       if (!$('body').hasClass('bkg-spring')) {
         $('body').addClass('bkg-spring');
       }
@@ -459,6 +450,7 @@ var Haiku = React.createClass({
       this.currentSeason = 'summer';
     } else {
       this.currentSeason = 'autumn';
+      this.previousSeason = 'summer';
       if (!$('body').hasClass('bkg-autumn')) {
         $('body').addClass('bkg-autumn');
       }
@@ -544,47 +536,61 @@ var Haiku = React.createClass({
   },
   walking: function() {
     var footsteps = this.seasons[this.currentSeason].getChildByName('walk');
+    var prevFootsteps = this.seasons[this.previousSeason].getChildByName('walk');
     var otherSeasons = 0;
     switch (this.currentSeason) {
       case 'summer':
         otherSeasons = 15000;
+        prevOtherSeasons = 15000;
         break;
       case 'autumn':
         otherSeasons = 10000;
+        prevOtherSeasons = 15000;
         break;
       case 'winter':
         otherSeasons = 5000;
+        prevOtherSeasons = 10000;
         break;
       case 'spring':
         otherSeasons = 0;
+        prevOtherSeasons = 5000;
         break;
     }
-    footsteps.mask.y = -(this.container.y + otherSeasons + this.stage.canvas.height / 2);
+    if (this.isOldMobile()) {
+      footsteps.mask.y = -(this.container.y + otherSeasons + window.innerHeight * 2);
+      prevFootsteps.mask.y = -(this.container.y + prevOtherSeasons + window.innerHeight * 2);
+    } else {
+      footsteps.mask.y = -(this.container.y + otherSeasons + window.innerHeight);
+      prevFootsteps.mask.y = -(this.container.y + prevOtherSeasons + window.innerHeight);
+    }
   },
   tick: function() {
     this.fall();
-    this.stage.update(event);
+    this.stage.update();
   },
   changeMovement: function() {
-    for (var i = 0; i < this.PARTICLES_NUMBER; i++) {
-      this.seasons[this.currentSeason].particles[i].xSpeed *= -1;
+    if (this.seasons[this.currentSeason].particlesNumber) {
+      for (var i = 0; i < this.seasons[this.currentSeason].particlesNumber; i++) {
+        this.seasons[this.currentSeason].particles[i].xSpeed *= -1;
+      }
     }
   },
   fall: function() {
-    if (this.previousSeason !== this.currentSeason && (this.currentSeason === 'winter' || this.currentSeason === 'spring')) {
-      var pSeason = this.seasons[this.previousSeason];
-      for (var i = 0; i < pSeason.particles.length; i++) {
-        Tween.get(pSeason.particles[i]).to({
-          alpha: 0
-        }, 1500, Ease.cubicOut);
+    if (this.previousSeason !== this.currentSeason && !this.isOldMobile()) {
+      if ((this.currentSeason === 'winter' || this.currentSeason === 'spring')) {
+        var pSeason = this.seasons[this.previousSeason];
+        if (pSeason.particleEnabled) {
+          pSeason.particleEnabled = false;
+          for (var i = 0; i < pSeason.particles.length; i++) {
+            Tween.get(pSeason.particles[i]).to({
+              alpha: 0
+            }, 1500, Ease.cubicOut);
+          }
+        }
       }
-      this.previousSeason = this.currentSeason;
-
     }
     if (this.currentSeason === 'winter' || this.currentSeason === 'autumn') {
       var season = this.seasons[this.currentSeason];
-
-
       for (var i = 0; i < season.particles.length; i++) {
         season.particles[i].x += season.particles[i].xSpeed;
         season.particles[i].y += season.particles[i].vel;
@@ -635,10 +641,11 @@ var Haiku = React.createClass({
       this.seasons[$('#' + gemId).data('season')].addChild(gem);
     }
     //finalDOMElement.x = this.stage.canvas.width / 4 - $('#final').width() / 2;
-    finalDOMElement.y = 300;
+
     finalScreen.addChild(finalDOMElement);
     finalScreen.addChild(gemsDOMElement);
-    gemsDOMElement.y = 300;
+    finalDOMElement.y = 250;
+    gemsDOMElement.y = 250;
   },
   getInitialState: function() {
     return {
@@ -664,6 +671,7 @@ var Haiku = React.createClass({
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
+        location.reload();
       }.bind(this)
     });
     $('.cross').on('click', function() {
@@ -679,15 +687,23 @@ var Haiku = React.createClass({
   },
   socShare: function(socialMedia, text) {
     var socialMediaUrl;
+    console.log(text)
     switch (socialMedia) {
       case 'facebook':
-        socialMediaUrl = "http://www.facebook.com/sharer.php?u=" + text;
+        if (text) {
+          $('meta[property="og:description"]').attr('content', text);
+        }
+        socialMediaUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(window.location.href);
         break;
       case 'twitter':
-        socialMediaUrl = "http://twitter.com/home?status=" + text;
+        if (!text) {
+          socialMediaUrl = "http://twitter.com/home?status=D%C3%A9couvrez%20une%20balade%20po%C3%A9tique%20et%20tactile%20%C3%A0%20travers%20les%20quatre%20saisons%20dans%20ce%20ha%C3%AFku%20interactif%20de%20Cosmografik%20http://tinyurl.com/luhgqny";
+        } else {
+          socialMediaUrl = "http://twitter.com/home?status=" + text;
+        }
         break;
       case 'pinterest':
-        socialMediaUrl = "https://pinterest.com/pin/create/button/?url=" + encodeURIComponent(window.location.href) + "&media=" + window.location.href + "/assets/post_pinterest.jpg&description=" + text;
+        socialMediaUrl = "https://pinterest.com/pin/create/button/?url=" + encodeURIComponent(window.location.href) + "&media=" + window.location.href + "/assets/post_pinterest.jpg&description=20une%2520balade%2520po%25C3%25A9tique%2520et%2520tactile%2520%25C3%25A0%2520travers%2520les%2520quatre%2520saisons%2520dans%2520ce%2520ha%25C3%25AFku%2520interactif%2520de%2520Cosmografik%20:http://tinyurl.com/luhgqny";
         break;
     }
     window.open(socialMediaUrl, socialMedia, "toolbar=0,status=0,width=900,height=626");

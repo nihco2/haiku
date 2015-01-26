@@ -24,9 +24,6 @@
     "id": "caille",
     "src": "assets/ete/caille.png"
   }, {
-    "id": "ondes_eau",
-    "src": "assets/ete/ondes_eau.png"
-  }, {
     "id": "poissons",
     "src": "assets/ete/poissons.png"
   }, {
@@ -159,14 +156,6 @@
     "destY": 200,
     "delay": 0
   }, {
-    "name": "ondes_eau",
-    "season": "summer",
-    "posY": 62,
-    "posX": 0,
-    "destX": 0,
-    "destY": 62,
-    "delay": 0
-  }, {
     "name": "ecureuil",
     "season": "autumn",
     "posY": 1800,
@@ -246,40 +235,40 @@
   "texts": [{
     "id": "gem1",
     "typo": "30px Antic Slab",
-    "color": "#fff",
+    "color": "#5b78b7",
     "name": "haiku1",
     "position": -1350
   }, {
     "id": "gem2",
     "typo": "30px Antic Slab",
-    "color": "#fff",
+    "color": "#5b78b7",
     "name": "haiku2",
-    "position": -600
+    "position": -200
   }, {
     "id": "gem3",
     "typo": "30px Antic Slab",
-    "color": "#fff",
+    "color": "#5b78b7",
     "name": "haiku3",
-    "position": -800
+    "position": -780
   }, {
     "id": "gem4",
     "typo": "30px Antic Slab",
-    "color": "#fff",
+    "color": "#5b78b7",
     "name": "haiku4",
-    "position": -200
+    "position": -130
   }, {
-    "text": "Posez votre téléphone ou tablette sur une surface plane et utilisez vos deux doigts\npour marcher sur l\"écran et démarrer\nvotre voyage...",
+    "text": "Posez votre téléphone ou tablette sur une surface plane et utilisez vos deux doigts\npour marcher sur l'écran et démarrer\nvotre voyage...",
     "id": "tuto",
     "typo": "30px Antic Slab",
     "name": "tuto",
-    "color": "#fff",
+    "color": "#5b78b7",
     "position": 0
   }, {
-    "text": "Utilisez les flèches gauche et droite\nde votre clavierpour avancer\nun pas après l'autre...",
+    "text": "Utilisez les flèches gauche et droite\nde votre clavier pour avancer\nun pas après l'autre...",
     "id": "desktop",
     "typo": "30px Antic Slab",
     "name": "tuto",
-    "color": "#fff",
+    "color": "#5b78b7",
     "position": 0
   }]
 }
