@@ -97,6 +97,12 @@
   }, {
     "id": "keyboard",
     "src": "assets/keyboard_desktop.png"
+  }, {
+    "id": "wind",
+    "src": "assets/sounds/wind.mp3"
+  }, {
+    "id": "gem_grab",
+    "src": "assets/sounds/gem_grab.mp3"
   }],
   "animations": [{
     "name": "mountain1",
@@ -151,7 +157,7 @@
     "name": "poissons",
     "season": "summer",
     "posY": 200,
-    "posX": 230,
+    "posX": 150,
     "destX": -100,
     "destY": 200,
     "delay": 0
@@ -166,16 +172,16 @@
   }, {
     "name": "oiseau",
     "season": "autumn",
-    "posY": 4250,
+    "posY": 4275,
     "posX": -100,
     "destX": 50,
-    "destY": 4250,
+    "destY": 4275,
     "delay": 0
   }, {
     "name": "fish",
     "season": "winter",
     "posY": 100,
-    "posX": 700,
+    "posX": 500,
     "destX": -100,
     "destY": 200,
     "delay": 0
@@ -222,15 +228,11 @@
   }, {
     "name": "poissons2",
     "season": "spring",
-    "posY": 4500,
+    "posY": 4540,
     "posX": -250,
     "destX": 200,
-    "destY": 4500,
+    "destY": 4540,
     "delay": 0
-  }],
-  "sounds": [{
-    "name": "wind",
-    "src": "assets/sounds/wind.mp3"
   }],
   "texts": [{
     "id": "gem1",
@@ -243,7 +245,7 @@
     "typo": "30px Antic Slab",
     "color": "#5b78b7",
     "name": "haiku2",
-    "position": -200
+    "position": -230
   }, {
     "id": "gem3",
     "typo": "30px Antic Slab",
@@ -269,6 +271,6 @@
     "typo": "30px Antic Slab",
     "name": "tuto",
     "color": "#5b78b7",
-    "position": 0
+    "position": 100
   }]
 }

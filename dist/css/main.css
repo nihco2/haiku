@@ -12,21 +12,19 @@ html, body {
 body{
   background:url('../assets/bg_desktop.jpg') no-repeat;
   background-size:cover;
+  transition: background-image 5s;
 }
 .bkg-autumn{
   background:url('../assets/bg_desktop_2.jpg') no-repeat;
-  opacity: 1;
-  transition: opacity 2s linear;
+  background-size:cover;
 }
 .bkg-winter{
   background:url('../assets/bg_desktop_3.jpg') no-repeat;
-  opacity: 1;
-  transition: opacity 2s linear;
+  background-size:cover;
 }
 .bkg-spring{
   background:url('../assets/bg_desktop_4.jpg') no-repeat;
-  opacity: 1;
-  transition: opacity 2s linear;
+  background-size:cover;
 }
 ::-moz-selection {
   background: #b3d4fc;
@@ -72,8 +70,16 @@ header {
   margin: 0 auto; 
   background:  url('../assets/bg_homepage.jpg') no-repeat center;
   background-size:cover;
+  max-height: 700px;
 }
 
+.shadow{
+  -moz-box-shadow: 0px 0px 20px 5px #656565;
+  -webkit-box-shadow: 0px 0px 20px 5px #656565;
+  -o-box-shadow: 0px 0px 20px 5px #656565;
+  box-shadow: 0px 0px 20px 5px #656565;
+  filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=20);
+}
 .logo{
   background: url('../assets/homepage_logo.png') no-repeat center;
   font-size: 0;
@@ -96,7 +102,8 @@ canvas{
   -webkit-transform-origin: left top; 
   -moz-transform-origin: left top; 
   -o-transform-origin: left top; 
-  transform-origin: left top; 
+  transform-origin: left top;
+
 }
 .white{
   position: absolute;
@@ -110,14 +117,18 @@ canvas{
 }
 
 #wrapper {
-  /*max-width: 640px;*/
   position: relative;
   display: none;
   top: 0;
   margin: 0 auto;
   height: 0;
   opacity: 0;
-  cursor: move;
+  overflow: hidden;
+  -moz-box-shadow: 0px 0px 20px 5px #656565;
+  -webkit-box-shadow: 0px 0px 20px 5px #656565;
+  -o-box-shadow: 0px 0px 20px 5px #656565;
+  box-shadow: 0px 0px 20px 5px #656565;
+  filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=20);
 }
 .loader {
   margin: 0 auto;
@@ -141,7 +152,7 @@ canvas{
   width: 125px;
   height: 125px;
   margin-top: -50px;
-  margin-left: -40px;
+  margin-left: -44px;
   background: url('../assets/loading_circle.png');
   background-size:contain;
   animation: rotating 2s linear infinite;
@@ -217,7 +228,7 @@ nav{
   display: none;
   text-align: center;
   max-width: 640px;
-  margin: 0 auto;
+  margin: 100px auto;
   position:  relative !important;
   z-index: 1;
 }
@@ -272,8 +283,21 @@ nav{
   margin-left: 38px;
 }
 
-#warning .modal-dialog{
-  margin-top:25%;
+.desktop .modal {
+  text-align: center;
+}
+
+.desktop .modal:before {
+  display: inline-block;
+  vertical-align: middle;
+  content: " ";
+  height: 100%;
+}
+
+.desktop .modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
 }
 #warning p{
   padding-left: 20px;
@@ -344,15 +368,15 @@ nav li,.social-share li{
   font-size: 30px;
 }
 #gems .social-share{
-  position: absolute;
-  right: 5px;
+  margin-top: 10px;
 }
 
 aside{
   max-width: 640px;
+  width: 100%;
   margin: 0 auto;
-  position:  relative !important;
   z-index: 2;
+  top:0 !important;
 }
 .center{
   max-width: 320px;
@@ -363,18 +387,22 @@ aside{
 .gem1{
   background: url('../assets/gem_1.png') !important;
   background-size:contain !important;
+  cursor: pointer;
 }
 .gem2{
   background: url('../assets/gem_2.png') !important;
   background-size:contain !important;
+  cursor: pointer;
 }
 .gem3{
   background: url('../assets/gem_3.png') !important;
   background-size:contain !important;
+  cursor: pointer;
 }
 .gem4{
   background: url('../assets/gem_4.png') !important;
   background-size:contain !important;
+  cursor: pointer;
 }
 .gem{
   float: left;
@@ -382,6 +410,30 @@ aside{
   height: 75px;
   background: url('../assets/gem_blank.png');
   background-size:contain;
+}
+#landscape{
+  display: none;
+  position: absolute;
+  top:0;
+  z-index: 12;
+  background: url('../assets/bg_landscape.jpg') no-repeat;
+  background-size: cover;
+  font-family: 'Amatic SC';
+  color:#a48652;
+  width: 100%;
+  height: 100%;
+  font-size: 40px;
+}
+#landscape p{
+  text-align: center;
+  margin: 20px;
+}
+#landscape div{
+  text-align: center;
+}
+
+#landscape img{
+  width: 240px;
 }
 
 @-webkit-keyframes rotating {
@@ -444,5 +496,38 @@ aside{
   .btn-start.press{
     width: 190px;
     height: 190px
+  }
+}
+
+/* Smartphones (landscape) ----------- */
+@media only screen and (min-width : 500px) {
+  #landscape{
+    display: block;
+  }
+}
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) {
+  #landscape{
+    display: block;
+  }
+}
+/* Smartphones (portrait) ----------- */
+@media only screen and (max-width : 320px) {
+  #landscape{
+    display: none;
+  }
+}
+
+/* iPads (portrait) ----------- */
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
+  #landscape{
+    display: none;
+  }
+}
+
+@media only screen and (min-width : 1224px) {
+  #landscape{
+    display: none;
   }
 }
