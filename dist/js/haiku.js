@@ -25,7 +25,7 @@ var Haiku = React.createClass({
   PARTICLES_NUMBER_AUTUMN: 12,
   END_TOUCH_EVENT: 500,
   PARTICLES_TIME_CHANGE_DIRECTION: 20000, //miliseconds
-  DESKTOP_HEIGHT: 700,
+  DESKTOP_HEIGHT: 568,
   SNOW_COLOR: {
     red: 255,
     green: 255,
@@ -800,7 +800,7 @@ var Haiku = React.createClass({
       $('body').addClass('desktop');
       $('header,aside').css('top', window.innerHeight / 2 - this.DESKTOP_HEIGHT / 2);
       $('header').addClass('shadow')
-      $('header,#wrapper').width((640 * window.innerHeight) / 1136);
+      //$('header,#wrapper').width((640 * window.innerHeight) / 1136);
     } else {
       $('body').addClass('mobile');
     }

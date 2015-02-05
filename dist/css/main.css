@@ -66,13 +66,21 @@ a {
 header {
   width: 100%;
   height: 100%;
-  position: relative;
+  position: absolute;
   margin: 0 auto; 
   background:  url('../assets/bg_homepage.jpg') no-repeat center;
   background-size:cover;
-  max-height: 700px;
 }
 
+.desktop header,.desktop #wrapper{
+  height: 568px;
+  width: 320px;
+}
+
+.desktop header{
+  left: 50%;
+  margin-left: -160px;
+}
 .shadow{
   -moz-box-shadow: 0px 0px 20px 5px #656565;
   -webkit-box-shadow: 0px 0px 20px 5px #656565;
@@ -195,6 +203,7 @@ nav{
 .content{
   display: none;
 }
+
 
 .credits{
   width: 100%;
