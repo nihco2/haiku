@@ -98,11 +98,20 @@
     "id": "keyboard",
     "src": "assets/keyboard_desktop.png"
   }, {
-    "id": "wind",
-    "src": "assets/sounds/wind.mp3"
-  }, {
     "id": "gem_grab",
     "src": "assets/sounds/gem_grab.mp3"
+  }, {
+    "id": "snd_summer",
+    "src": "assets/sounds/snd_summer.mp3"
+  }, {
+    "id": "snd_autumn",
+    "src": "assets/sounds/snd_autumn.mp3"
+  }, {
+    "id": "snd_winter",
+    "src": "assets/sounds/snd_winter.mp3"
+  }, {
+    "id": "snd_spring",
+    "src": "assets/sounds/snd_spring.mp3"
   }],
   "animations": [{
     "name": "mountain1",
@@ -164,10 +173,10 @@
   }, {
     "name": "ecureuil",
     "season": "autumn",
-    "posY": 1800,
+    "posY": 2000,
     "posX": 0,
     "destX": 0,
-    "destY": 2800,
+    "destY": 3000,
     "delay": 0
   }, {
     "name": "oiseau",
@@ -205,8 +214,8 @@
     "name": "coccinelle",
     "season": "spring",
     "posY": 3500,
-    "posX": 200,
-    "destX": 200,
+    "posX": 230,
+    "destX": 230,
     "destY": 3000,
     "delay": 0
   }, {

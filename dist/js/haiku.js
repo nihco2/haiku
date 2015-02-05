@@ -133,7 +133,7 @@ var Haiku = React.createClass({
         self.seasons[season.name].particlesNumber = self.PARTICLES_NUMBER_WINTER;
         self.seasons[season.name].particleEnabled = true;
       }
-      (index > 0) ? bitmapContainer.y = self.container.getBounds().height - 1 : bitmapContainer.y = finalContainer.getBounds().height;
+      (index > 0) ? bitmapContainer.y = self.container.getBounds().height - 2 : bitmapContainer.y = finalContainer.getBounds().height;
     })
 
     self.stage.addChild(this.container);
@@ -244,20 +244,26 @@ var Haiku = React.createClass({
       social = document.getElementById("social"),
       socDOMElement = new DOMElement(social);
 
+
+
     $('.js-btn-start').on('click', function() {
-      /*createjs.Sound.play("wind", {
+      createjs.Sound.play('snd_summer', {
         loop: 'infinite'
-      });*/
-      $('.white').show().fadeTo('slow', 1, function() {
-        $('#gems').show();
-        $('#wrapper').show().fadeTo('slow', 1);
-        $('header').remove();
-        $('#final').show();
-        self.container.getChildByName('final').addChild(socDOMElement);
-        $('.white').fadeTo('slow', 0, function() {
-          $(this).remove();
-        });
-      });
+      }).setVolume(0.02);
+
+      /*  var interval = setInterval(function() {
+        console.log(instance);
+        //instance.setVolume(instance.getVolume() + 0.001);
+      }, 1000);*/
+
+      // $('.white').show().fadeTo('slow', 1, function() {
+      $('#gems').show();
+      $('#wrapper').fadeIn('slow');
+      $('header').fadeOut('slow');
+      $('#final').show();
+      self.container.getChildByName('final').addChild(socDOMElement);
+
+      //});
       if (!self.isMobile()) {
         $('#warning').modal();
         $('.continue').on('click', function() {
@@ -297,15 +303,6 @@ var Haiku = React.createClass({
       $(this).removeClass('press');
     }).on('mousedown', function() {
       $(this).addClass('press');
-    });;
-
-    $('.social-share li').on('click', function(event) {
-      var provider = $(event.target).data('provider');
-      var text = $(event.target).data('haiku');
-      if (!text) {
-        text = null;
-      }
-      self.socShare(provider, text);
     });
 
     mc = new Hammer(this.stage.canvas);
@@ -478,24 +475,38 @@ var Haiku = React.createClass({
     if (this.checkSeason(this.seasons.winter)) {
       this.currentSeason = 'winter';
       this.previousSeason = 'autumn';
+
       if (!$('body').hasClass('bkg-winter')) {
         $('body').removeClass('bkg-autumn');
         $('body').addClass('bkg-winter');
+        createjs.Sound.stop();
+        createjs.Sound.play('snd_winter', {
+          loop: 'infinite'
+        }).setVolume(0.02);
       }
     } else if (this.checkSeason(this.seasons.spring)) {
       this.currentSeason = 'spring';
       this.previousSeason = 'winter';
+
       if (!$('body').hasClass('bkg-spring')) {
         $('body').removeClass('bkg-winter');
         $('body').addClass('bkg-spring');
+        createjs.Sound.stop();
+        createjs.Sound.play('snd_spring', {
+          loop: 'infinite'
+        }).setVolume(0.02);
       }
     } else if (this.checkSeason(this.seasons.summer)) {
       this.currentSeason = 'summer';
-    } else {
+    } else if (this.checkSeason(this.seasons.autumn)) {
       this.currentSeason = 'autumn';
       this.previousSeason = 'summer';
       if (!$('body').hasClass('bkg-autumn')) {
         $('body').addClass('bkg-autumn');
+        createjs.Sound.stop();
+        createjs.Sound.play('snd_autumn', {
+          loop: 'infinite'
+        }).setVolume(0.02);
       }
     }
   },
@@ -774,6 +785,14 @@ var Haiku = React.createClass({
     });
     $('#wrapper').append($('aside'));
     $('aside').append($('#final'));
+    $('.social-share li').on('click', function(event) {
+      var provider = $(event.target).data('provider');
+      var text = $(event.target).data('haiku');
+      if (!text) {
+        text = null;
+      }
+      self.socShare(provider, text);
+    });
   },
 
   render: function() {
@@ -782,6 +801,8 @@ var Haiku = React.createClass({
       $('header,aside').css('top', window.innerHeight / 2 - this.DESKTOP_HEIGHT / 2);
       $('header').addClass('shadow')
       $('header,#wrapper').width((640 * window.innerHeight) / 1136);
+    } else {
+      $('body').addClass('mobile');
     }
     return React.DOM.canvas({
       id: 'haiku'
