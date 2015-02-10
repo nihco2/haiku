@@ -244,8 +244,6 @@ var Haiku = React.createClass({
       social = document.getElementById("social"),
       socDOMElement = new DOMElement(social);
 
-
-
     $('.js-btn-start').on('click', function() {
       createjs.Sound.play('snd_summer', {
         loop: 'infinite'
@@ -305,7 +303,7 @@ var Haiku = React.createClass({
       $(this).addClass('press');
     });
 
-    mc = new Hammer(this.stage.canvas);
+    mc = new Hammer(document.getElementById('wrapper'));
     mc.get('pan').set({
       threshold: 0
     });
@@ -394,13 +392,14 @@ var Haiku = React.createClass({
       return alert('Rien ne sert de courir petit scarabée !');
     }
 
-    if (this.container.y <= -this.num && this.container.y >= this.scrollHeight && this.isMobile()) {
+    if (this.container.y >= this.scrollHeight && this.isMobile()) {
       Tween.get(this.container).to({
         y: this.container.y + this.num
       }, 0, Ease.cubicOut);
     } else if (!this.isMobile() && this.gameEnabled) {
       this.gameEnabled = false;
-      if (this.container.y >= -this.DESKTOP_HEIGHT - $('#haiku').height()) {
+      if (this.container.y >= -this.DESKTOP_HEIGHT) {
+        console.log('!!!')
         Tween.get(this.container).to({
           y: 0
         }, 500, Ease.sineOut);
@@ -453,7 +452,7 @@ var Haiku = React.createClass({
       self.disablePan();
       Tween.get(this.container).to({
         y: 0
-      }, self.END_TOUCH_EVENT, Ease.cubicOut).call(function() {
+      }, 2000, Ease.cubicOut).call(function() {
         self.enablePan();
       });
     } else {
@@ -479,6 +478,7 @@ var Haiku = React.createClass({
       if (!$('body').hasClass('bkg-winter')) {
         $('body').removeClass('bkg-autumn');
         $('body').addClass('bkg-winter');
+        $('.bg_winter').fadeTo(5000, 1);
         createjs.Sound.stop();
         createjs.Sound.play('snd_winter', {
           loop: 'infinite'
@@ -491,6 +491,7 @@ var Haiku = React.createClass({
       if (!$('body').hasClass('bkg-spring')) {
         $('body').removeClass('bkg-winter');
         $('body').addClass('bkg-spring');
+        $('.bg_spring').fadeTo(5000, 1);
         createjs.Sound.stop();
         createjs.Sound.play('snd_spring', {
           loop: 'infinite'
@@ -503,6 +504,7 @@ var Haiku = React.createClass({
       this.previousSeason = 'summer';
       if (!$('body').hasClass('bkg-autumn')) {
         $('body').addClass('bkg-autumn');
+        $('.bg_autumn').fadeTo(5000, 1);
         createjs.Sound.stop();
         createjs.Sound.play('snd_autumn', {
           loop: 'infinite'
@@ -679,9 +681,11 @@ var Haiku = React.createClass({
         }
       }).on('hide.bs.popover', function() {
         $('#' + event.target.id).append(soc.hide());
+        $('#wrapper').removeClass('overflow');
       }).on('show.bs.popover', function() {
         $('#' + event.target.id).append(soc.show());
         $('.gemEnabled').popover('hide');
+        $('#wrapper').addClass('overflow');
       });
     };
     this.stage.enableMouseOver(10);
@@ -703,37 +707,24 @@ var Haiku = React.createClass({
         }
       });
     }
-    //finalDOMElement.x = this.stage.canvas.width / 4 - $('#final').width() / 2;
-
-    //finalScreen.addChild(finalDOMElement);
     finalScreen.addChild(gemsDOMElement);
-    if (self.isMobile()) {
-      //finalDOMElement.y = 250;
-      gemsDOMElement.y = 250;
-    } else {
-      //finalDOMElement.y = 400;
-      gemsDOMElement.y = 300;
-    }
+    gemsDOMElement.y = 250;
+    this.shareInit();
   },
   socShare: function(socialMedia, text) {
     var socialMediaUrl;
-    console.log(text)
+    if (!text) {
+      text = "D%C3%A9couvrez%20une%20balade%20po%C3%A9tique%20et%20tactile%20%C3%A0%20travers%20les%20quatre%20saisons%20dans%20ce%20ha%C3%AFku%20interactif%20de%20Cosmografik%20";
+    }
     switch (socialMedia) {
       case 'facebook':
-        if (text) {
-          $('meta[property="og:description"]').attr('content', text);
-        }
-        socialMediaUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(window.location.href);
+        socialMediaUrl = "http://www.facebook.com/sharer/sharer.php?s=100&amp;p[url]=" + encodeURIComponent(window.location.href) + "&amp;p[images][0]=&amp;p[title]=Le%20marcheur%20de%20saison&amp;p[summary]=" + text;
         break;
       case 'twitter':
-        if (!text) {
-          socialMediaUrl = "http://twitter.com/home?status=D%C3%A9couvrez%20une%20balade%20po%C3%A9tique%20et%20tactile%20%C3%A0%20travers%20les%20quatre%20saisons%20dans%20ce%20ha%C3%AFku%20interactif%20de%20Cosmografik%20http://tinyurl.com/luhgqny";
-        } else {
-          socialMediaUrl = "http://twitter.com/home?status=" + text;
-        }
+        socialMediaUrl = "http://twitter.com/intent/tweet?url=http://tinyurl.com/luhgqny&amp;text=" + text + ";hashtags=haiku";
         break;
       case 'pinterest':
-        socialMediaUrl = "https://pinterest.com/pin/create/button/?url=" + encodeURIComponent(window.location.href) + "&media=" + window.location.href + "/assets/post_pinterest.jpg&description=20une%2520balade%2520po%25C3%25A9tique%2520et%2520tactile%2520%25C3%25A0%2520travers%2520les%2520quatre%2520saisons%2520dans%2520ce%2520ha%25C3%25AFku%2520interactif%2520de%2520Cosmografik%20:http://tinyurl.com/luhgqny";
+        socialMediaUrl = "https://pinterest.com/pin/create/button/?url=" + encodeURIComponent(window.location.href) + "&media=" + window.location.href + "/assets/post_pinterest.jpg&description=" + text + ":http://tinyurl.com/luhgqny";
         break;
     }
     window.open(socialMediaUrl, socialMedia, "toolbar=0,status=0,width=900,height=626");
@@ -743,7 +734,6 @@ var Haiku = React.createClass({
       item;
     this.scrollToBottom();
     self.collection.forEach(function(item, index) {
-      console.log(item);
       item.y = item.posY;
       item.x = item.posX;
     });
@@ -781,17 +771,25 @@ var Haiku = React.createClass({
 
     $('.restart').on('click', function() {
       self.reset();
-      $('body').removeClass();
+      $('#wrapper').removeClass('overflow');
+      $('body').removeClass('bkg-spring');
+      $('.cb-slideshow li:not(.cb-slideshow li:nth-child(1)) span').css('opacity', 0);
     });
     $('#wrapper').append($('aside'));
     $('aside').append($('#final'));
+    this.shareInit();
+  },
+
+  shareInit: function() {
+    var self = this;
     $('.social-share li').on('click', function(event) {
       var provider = $(event.target).data('provider');
       var text = $(event.target).data('haiku');
-      if (!text) {
-        text = null;
+      if (text) {
+        return self.socShare(provider, text);
       }
-      self.socShare(provider, text);
+
+      self.socShare(provider);
     });
   },
 

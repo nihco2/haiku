@@ -10,9 +10,7 @@ html, body {
   background: #ece0e0;
 }
 body{
-  background:url('../assets/bg_desktop.jpg') no-repeat;
-  background-size:cover;
-  transition: background-image 5s;
+  
 }
 .bkg-autumn{
   background:url('../assets/bg_desktop_2.jpg') no-repeat;
@@ -67,7 +65,8 @@ header {
   width: 100%;
   height: 100%;
   position: absolute;
-  margin: 0 auto; 
+  margin: 0 auto;
+  z-index: 1;
   background:  url('../assets/bg_homepage.jpg') no-repeat center;
   background-size:cover;
 }
@@ -122,11 +121,15 @@ canvas{
   margin: 0 auto;
   height: 0;
   overflow: hidden;
+  z-index: 1;
   -moz-box-shadow: 0px 0px 20px 5px #656565;
   -webkit-box-shadow: 0px 0px 20px 5px #656565;
   -o-box-shadow: 0px 0px 20px 5px #656565;
   box-shadow: 0px 0px 20px 5px #656565;
   filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=20);
+}
+.overflow{
+  overflow: visible !important;
 }
 .loader {
   margin: 0 auto;
@@ -332,6 +335,7 @@ nav{
   top:10px;
   right: 10px;
   width:20px;
+  cursor: pointer;
 }
 .popover{
   width: 95%;
@@ -349,6 +353,7 @@ nav li,.social-share li{
   width: 30px;
   float: left;
   margin-left: 5px;
+  cursor: pointer;
 }
 
 #gems{
@@ -440,14 +445,50 @@ aside{
   width: 240px;
 }
 
-@-webkit-keyframes rotating {
-    from{
-        -webkit-transform: rotate(0deg);
-    }
-    to{
-        -webkit-transform: rotate(360deg);
-    }
+.cb-slideshow,
+.cb-slideshow:after { 
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: 0;
+    list-style: none;
+    padding-left: 0;
 }
+
+.cb-slideshow li span { 
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    color: transparent;
+    background-position: 50% 50%;
+    background-repeat: none;
+    opacity: 0;
+    z-index: 0;
+}
+
+.cb-slideshow li:nth-child(1) span { 
+    background:url('../assets/bg_desktop.jpg') no-repeat;
+    background-size: cover;
+    opacity: 1;
+}
+.cb-slideshow li:nth-child(2) span { 
+    background:url('../assets/bg_desktop_2.jpg') no-repeat;
+    background-size: cover;
+}
+.cb-slideshow li:nth-child(3) span { 
+    background:url('../assets/bg_desktop_3.jpg') no-repeat; 
+    background-size: cover;
+}
+.cb-slideshow li:nth-child(4) span {
+  background:url('../assets/bg_desktop_4.jpg') no-repeat;
+  background-size: cover;
+}
+
+
 
 /* IPHONE 4 */
 @media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5){
