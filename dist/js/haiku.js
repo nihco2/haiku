@@ -53,6 +53,9 @@ var Haiku = React.createClass({
     var height = el.getBounds() ? el.getBounds().height : 0;
     return (elTop + height - el.delay >= 0);
   },
+  isRetina: function() {
+    return (window.retina || window.devicePixelRatio > 1);
+  },
   checkSeason: function(season) {
     return (this.container.y >= -(season.y + season.getBounds().height) && this.container.y <= -season.y);
   },
@@ -93,25 +96,28 @@ var Haiku = React.createClass({
       tutoBkg = new createjs.Bitmap(this.queue.getResult('tuto')),
       finalContainer = new createjs.Container(),
       finalBitmap = new createjs.Bitmap(this.queue.getResult('end')),
-      self = this;
+      patern = new createjs.Bitmap(this.queue.getResult('patern')),
+      totalBmp = new createjs.Bitmap(this.queue.getResult('total'));
 
+    self = this;
+    totalBmp.name = 'total';
     finalContainer.addChild(finalBitmap);
     finalContainer.name = 'final';
     self.container.addChild(finalContainer);
     fingersSprite.name = 'fingersSprite';
-    seasons[0] = self.queue.getResult('spring'),
+    seasons[0] = patern.clone(),
     seasons[0]['name'] = 'spring';
-    seasons[1] = self.queue.getResult('winter'),
+    seasons[1] = patern.clone(),
     seasons[1]['name'] = 'winter',
-    seasons[2] = self.queue.getResult('autumn'),
+    seasons[2] = patern.clone(),
     seasons[2]['name'] = 'autumn',
-    seasons[3] = self.queue.getResult('summer'),
+    seasons[3] = patern.clone(),
     seasons[3]['name'] = 'summer';
     seasons.forEach(function(season, index) {
-      var bitmap = new createjs.Bitmap(season);
       var bitmapContainer = new createjs.Container();
+      season.alpha = 0;
       bitmapContainer.name = season.name;
-      bitmapContainer.addChild(bitmap);
+      bitmapContainer.addChild(season);
       self.container.addChild(bitmapContainer);
       self.seasons[season.name] = bitmapContainer;
       self.seasons[season.name].particles = [];
@@ -129,6 +135,8 @@ var Haiku = React.createClass({
         } else {
           tutoContainer.addChild(fingersSprite);
         }
+        tutoHeight = tutoContainer.getBounds().height;
+        totalBmp.y = tutoHeight;
       } else if (season.name === 'autumn') {
         self.seasons[season.name].particlesNumber = self.PARTICLES_NUMBER_AUTUMN;
         self.seasons[season.name].particleEnabled = true;
@@ -137,10 +145,11 @@ var Haiku = React.createClass({
         self.seasons[season.name].particleEnabled = true;
       }
       (index > 0) ? bitmapContainer.y = self.container.getBounds().height - 2 : bitmapContainer.y = finalContainer.getBounds().height;
-    })
+    });
 
+    this.container.addChild(totalBmp);
+    this.container.swapChildren(totalBmp, this.container.getChildByName('spring'));
     self.stage.addChild(this.container);
-
   },
   initSize: function() {
     var tuto = this.seasons.summer.getChildByName('tuto');
@@ -157,7 +166,6 @@ var Haiku = React.createClass({
     }
     this.bkgHeight = this.container.getBounds().height;
     this.scrollHeight = -this.bkgHeight + this.stage.canvas.height;
-
     this.scrollToBottom();
   },
   initAssets: function() {
@@ -523,7 +531,6 @@ var Haiku = React.createClass({
       loop: -1
     });
     this.nextSound.setVolume(0);
-    console.log(this.currentSound);
     this.fadeOutSound(this.currentSound);
     this.fadeInSound(this.nextSound);
   },

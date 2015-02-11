@@ -3,17 +3,11 @@
     "id": "end",
     "src": "assets/bg_end.jpg"
   }, {
-    "id": "spring",
-    "src": "assets/bg_printemps.jpg"
+    "id": "patern",
+    "src": "assets/season_patern.jpg"
   }, {
-    "id": "winter",
-    "src": "assets/bg_hiver.jpg"
-  }, {
-    "id": "autumn",
-    "src": "assets/bg_automne.jpg"
-  }, {
-    "id": "summer",
-    "src": "assets/bg_ete.jpg"
+    "id": "total",
+    "src": "assets/bg_total.jpg"
   }, {
     "id": "tree",
     "src": "assets/ete/arbre_1.png"
@@ -112,6 +106,9 @@
   }, {
     "id": "snd_spring",
     "src": "assets/sounds/snd_spring.mp3"
+  }, {
+    "id": "snd_footstep",
+    "src": "assets/sounds/footstep.ogg"
   }],
   "animations": [{
     "name": "mountain1",
