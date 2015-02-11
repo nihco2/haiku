@@ -16,6 +16,9 @@ var Haiku = React.createClass({
   it: 0,
   collectedGems: 0,
   scroll_end: 0,
+  currentSound: null,
+  nextSound: null,
+  MAX_VOLUME: 0.02,
   SCROLL_VELOCITY: 300,
   ASSET_MOVEMENT: 5,
   RUN_LIMIT: 1000,
@@ -143,9 +146,6 @@ var Haiku = React.createClass({
     var tuto = this.seasons.summer.getChildByName('tuto');
     this.stage.canvas.width = this.container.getBounds().width;
     if (!this.isMobile()) {
-      /*var shape = new createjs.Shape();
-      shape.graphics.beginFill("#ff0000").drawRect(0, 0, this.stage.canvas.width, this.DESKTOP_HEIGHT);
-      this.stage.mask = shape;*/
       this.stage.canvas.height = this.DESKTOP_HEIGHT * (this.stage.canvas.width / $('#wrapper').width());
       $('#wrapper').css('top', window.innerHeight / 2 - this.DESKTOP_HEIGHT / 2).height(this.DESKTOP_HEIGHT - 1);
       $('#haiku').width($('#wrapper').width);
@@ -238,6 +238,27 @@ var Haiku = React.createClass({
       }
     }
   },
+  fadeInSound: function(instance) {
+    var self = this;
+    var interval = setInterval(function() {
+      if (instance.getVolume() < self.MAX_VOLUME) {
+        instance.setVolume(instance.getVolume() + 0.001);
+      } else {
+        clearInterval(interval);
+      }
+    }, 200);
+  },
+  fadeOutSound: function(instance) {
+    var self = this;
+    var interval = setInterval(function() {
+      if (instance.getVolume() > 0) {
+        instance.setVolume(instance.getVolume() - 0.001);
+      } else {
+        self.currentSound = self.nextSound;
+        clearInterval(interval);
+      }
+    }, 200);
+  },
   initListeners: function() {
     var self = this,
       left = true,
@@ -245,23 +266,19 @@ var Haiku = React.createClass({
       socDOMElement = new DOMElement(social);
 
     $('.js-btn-start').on('click', function() {
-      createjs.Sound.play('snd_summer', {
-        loop: 'infinite'
-      }).setVolume(0.02);
+      self.currentSound = createjs.Sound.play('snd_summer', {
+        loop: -1
+      });
 
-      /*  var interval = setInterval(function() {
-        console.log(instance);
-        //instance.setVolume(instance.getVolume() + 0.001);
-      }, 1000);*/
+      self.currentSound.setVolume(0);
+      self.fadeInSound(self.currentSound);
 
-      // $('.white').show().fadeTo('slow', 1, function() {
       $('#gems').show();
       $('#wrapper').fadeIn('slow');
       $('header').fadeOut('slow');
       $('#final').show();
       self.container.getChildByName('final').addChild(socDOMElement);
 
-      //});
       if (!self.isMobile()) {
         $('#warning').modal();
         $('.continue').on('click', function() {
@@ -399,7 +416,6 @@ var Haiku = React.createClass({
     } else if (!this.isMobile() && this.gameEnabled) {
       this.gameEnabled = false;
       if (this.container.y >= -this.DESKTOP_HEIGHT) {
-        console.log('!!!')
         Tween.get(this.container).to({
           y: 0
         }, 500, Ease.sineOut);
@@ -424,7 +440,6 @@ var Haiku = React.createClass({
     this.walking();
     this.moveAssets('up');
     this.setCurrentSeason();
-    //}
   },
   handlePanUp: function(event) {
     this.currentDirection = 'up';
@@ -479,10 +494,7 @@ var Haiku = React.createClass({
         $('body').removeClass('bkg-autumn');
         $('body').addClass('bkg-winter');
         $('.bg_winter').fadeTo(5000, 1);
-        createjs.Sound.stop();
-        createjs.Sound.play('snd_winter', {
-          loop: 'infinite'
-        }).setVolume(0.02);
+        this.soundTransition('snd_winter');
       }
     } else if (this.checkSeason(this.seasons.spring)) {
       this.currentSeason = 'spring';
@@ -492,10 +504,7 @@ var Haiku = React.createClass({
         $('body').removeClass('bkg-winter');
         $('body').addClass('bkg-spring');
         $('.bg_spring').fadeTo(5000, 1);
-        createjs.Sound.stop();
-        createjs.Sound.play('snd_spring', {
-          loop: 'infinite'
-        }).setVolume(0.02);
+        this.soundTransition('snd_spring');
       }
     } else if (this.checkSeason(this.seasons.summer)) {
       this.currentSeason = 'summer';
@@ -505,12 +514,18 @@ var Haiku = React.createClass({
       if (!$('body').hasClass('bkg-autumn')) {
         $('body').addClass('bkg-autumn');
         $('.bg_autumn').fadeTo(5000, 1);
-        createjs.Sound.stop();
-        createjs.Sound.play('snd_autumn', {
-          loop: 'infinite'
-        }).setVolume(0.02);
+        this.soundTransition('snd_autumn');
       }
     }
+  },
+  soundTransition: function(season) {
+    this.nextSound = createjs.Sound.play(season, {
+      loop: -1
+    });
+    this.nextSound.setVolume(0);
+    console.log(this.currentSound);
+    this.fadeOutSound(this.currentSound);
+    this.fadeInSound(this.nextSound);
   },
   scrollToBottom: function() {
     var self = this;
@@ -718,7 +733,26 @@ var Haiku = React.createClass({
     }
     switch (socialMedia) {
       case 'facebook':
-        socialMediaUrl = "http://www.facebook.com/sharer/sharer.php?s=100&amp;p[url]=" + encodeURIComponent(window.location.href) + "&amp;p[images][0]=&amp;p[title]=Le%20marcheur%20de%20saison&amp;p[summary]=" + text;
+        if (!text) {
+          FB.ui({
+            method: 'feed',
+            name: "Le marcheur de saison",
+            link: "http://54.173.82.58/~marcheur/",
+            picture: "http://54.173.82.58/~marcheur/assets/post_facebook.jpg",
+            caption: window.location.href,
+            description: $('meta[property="og:description"]').attr('content')
+          });
+        } else {
+          FB.ui({
+            method: 'feed',
+            name: "Le marcheur de saison",
+            link: "http://54.173.82.58/~marcheur/",
+            picture: "http://54.173.82.58/~marcheur/assets/post_facebook.jpg",
+            caption: window.location.href,
+            description: decodeURI(text)
+          });
+        }
+        //socialMediaUrl = "http://www.facebook.com/sharer/sharer.php?s=100&amp;p[url]=" + encodeURIComponent(window.location.href) + "&amp;p[images][0]=&amp;p[title]=Le%20marcheur%20de%20saison&amp;p[summary]=" + text;
         break;
       case 'twitter':
         socialMediaUrl = "http://twitter.com/intent/tweet?url=http://tinyurl.com/luhgqny&amp;text=" + text + ";hashtags=haiku";
@@ -733,10 +767,19 @@ var Haiku = React.createClass({
     var self = this,
       item;
     this.scrollToBottom();
+    this.soundTransition('snd_summer');
     self.collection.forEach(function(item, index) {
       item.y = item.posY;
       item.x = item.posX;
     });
+
+    for (var season in this.seasons) {
+      if (this.seasons[season].particles) {
+        for (var i = 0; i < this.seasons[season].particles.length; i++) {
+          this.seasons[season].particles[i].alpha = 1;
+        }
+      }
+    }
   },
   getInitialState: function() {
     return {
