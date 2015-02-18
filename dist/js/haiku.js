@@ -18,6 +18,8 @@ var Haiku = React.createClass({
   scroll_end: 0,
   currentSound: null,
   nextSound: null,
+  enableFootSound: true,
+  soundInterval: null,
   MAX_VOLUME: 0.02,
   SCROLL_VELOCITY: 300,
   ASSET_MOVEMENT: 5,
@@ -97,9 +99,9 @@ var Haiku = React.createClass({
       finalContainer = new createjs.Container(),
       finalBitmap = new createjs.Bitmap(this.queue.getResult('end')),
       patern = new createjs.Bitmap(this.queue.getResult('patern')),
-      totalBmp = new createjs.Bitmap(this.queue.getResult('total'));
+      totalBmp = new createjs.Bitmap(this.queue.getResult('total')),
+      self = this;
 
-    self = this;
     totalBmp.name = 'total';
     finalContainer.addChild(finalBitmap);
     finalContainer.name = 'final';
@@ -144,10 +146,13 @@ var Haiku = React.createClass({
         self.seasons[season.name].particlesNumber = self.PARTICLES_NUMBER_WINTER;
         self.seasons[season.name].particleEnabled = true;
       }
+
       (index > 0) ? bitmapContainer.y = self.container.getBounds().height - 2 : bitmapContainer.y = finalContainer.getBounds().height;
     });
-
-    this.container.addChild(totalBmp);
+    if (navigator.userAgent.match(/iPad;.*CPU.*OS 7_\d/i)) {
+      //totalBmp = new createjs.Bitmap(this.queue.getResult('total_2')),
+    };
+    self.container.addChild(totalBmp);
     this.container.swapChildren(totalBmp, this.container.getChildByName('spring'));
     self.stage.addChild(this.container);
   },
@@ -286,7 +291,9 @@ var Haiku = React.createClass({
       $('header').fadeOut('slow');
       $('#final').show();
       self.container.getChildByName('final').addChild(socDOMElement);
-
+      if (navigator.userAgent.match(/iPad;.*CPU.*OS 7_\d/i)) {
+        $('#wrapper').show();
+      }
       if (!self.isMobile()) {
         $('#warning').modal();
         $('.continue').on('click', function() {
@@ -416,7 +423,7 @@ var Haiku = React.createClass({
       this.gameEnabled = false;
       return alert('Rien ne sert de courir petit scarabée !');
     }
-
+    console.log(this.container.y, -this.stage.canvas.height, this.isMobile())
     if (this.container.y >= this.scrollHeight && this.isMobile()) {
       Tween.get(this.container).to({
         y: this.container.y + this.num
@@ -427,7 +434,8 @@ var Haiku = React.createClass({
         Tween.get(this.container).to({
           y: 0
         }, 500, Ease.sineOut);
-        this.disablePan();
+        self.disablePan();
+        createjs.Sound.stop();
       } else {
         interval = setInterval(function() {
           self.moveAssets('up');
@@ -463,10 +471,14 @@ var Haiku = React.createClass({
     this.setCurrentSeason();
   },
   handleStart: function() {
-
+    if (this.enableFootSound) {
+      this.enableFootSound = false;
+      this.startFootstepsSound();
+    }
   },
   handleEnd: function() {
     var self = this;
+    this.stopFootstepsSound();
 
     if (self.container.y < self.scrollHeight + self.num) {
       self.disablePan();
@@ -644,6 +656,16 @@ var Haiku = React.createClass({
       prevFootsteps.mask.y = -(this.container.y + prevOtherSeasons + window.innerHeight);
     }
   },
+  startFootstepsSound: function() {
+    this.soundInterval = setInterval(function() {
+      createjs.Sound.play('snd_footstep');
+      this.enableFootSound = true;
+    }, 400);
+  },
+  stopFootstepsSound: function() {
+    clearInterval(this.soundInterval);
+    this.enableFootSound = true;
+  },
   tick: function() {
     this.fall();
     this.stage.update();
@@ -690,6 +712,7 @@ var Haiku = React.createClass({
     var self = this;
     var collect = function(event) {
       var soc = $('#' + event.target.id).find('.content');
+      $('.season-share').show();
       createjs.Sound.play('gem_grab');
       $('#' + event.target.id).addClass(event.target.id).addClass('gemEnabled');
       Tween.get(event.target).to({
@@ -827,6 +850,7 @@ var Haiku = React.createClass({
     });
     $('#wrapper').append($('aside'));
     $('aside').append($('#final'));
+
     this.shareInit();
   },
 
@@ -857,10 +881,3 @@ var Haiku = React.createClass({
     });
   }
 });
-
-var HaikuComponent = React.createFactory(Haiku);
-
-React.render(
-  HaikuComponent(),
-  document.getElementById('wrapper')
-);

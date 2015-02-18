@@ -43,6 +43,7 @@
             <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
             <script>window.html5 || document.write('<script src="js/vendor/html5shiv.js"><\/script>')</script>
         <![endif]-->
+  <script id="script-haiku" data-haiku="2" src="http://haiku-dev.nfb.ca/framework/js/haiku-onf.min.js"></script>
 </head>
 
 <body>
@@ -75,7 +76,7 @@
           <p><strong>Développement</strong><br>
           Nicolas Martin</p>
           <p><strong>Sound Design</strong><br>
-          Audiogaming</p>
+          Théo Le Du Fuentes et Nicolas Martin</p>
           <p><strong>Chef de projet</strong><br>
           Gary Touet</p>
           <p><strong>Production</strong><br>
@@ -117,11 +118,11 @@
       <div id="gem1" class="gem" data-season="summer" data-x="10" data-y="1200" data-container="body" data-toggle="popover" data-placement="bottom">
          <div class="content">
           <ul class="social-share">
-            <li class="fb" data-provider="facebook" data-haiku="Je%20m'assieds%20sur%20la%20beaut%C3%A9%20de%20quelques%20herbes%20en%20train%20de%20se%20dess%C3%A9cher.%20Antoka%20Taneda"></li>
-            <li class="tw" data-provider="twitter" data-haiku="Je%20m'assieds%20sur%20la%20beaut%C3%A9%20de%20quelques%20herbes%20en%20train%20de%20se%20dess%C3%A9cher.%20Antoka%20Taneda"></li>
+            <li class="fb" data-provider="facebook" data-haiku="Je%20m'assieds%20sur%20la%20beaut%C3%A9%20de%20quelques%20herbes%20en%20train%20de%20se%20dess%C3%A9cher.%20Santoka%20Taneda"></li>
+            <li class="tw" data-provider="twitter" data-haiku="Je%20m'assieds%20sur%20la%20beaut%C3%A9%20de%20quelques%20herbes%20en%20train%20de%20se%20dess%C3%A9cher.%20Santoka%20Taneda"></li>
           </ul>
           <p>Je m'assieds sur la beauté<br>de quelques herbes en train<br>de se dessécher.</p>
-          <p class="author">Antoka Taneda</p>
+          <p class="author">Santoka Taneda</p>
          </div>
       </div>
        <div id="gem2" class="gem" data-season="autumn" data-x="100" data-y="1300" data-container="body" data-toggle="popover" data-placement="bottom">
@@ -181,18 +182,30 @@
   var createjs = window;
   window.jQuery || document.write('<script src="js/vendor/jquery-1.11.1.min.js"><\/script>');
   </script>
-
+  <script src="js/vendor/react.min.js"></script>
   <script src="js/vendor/preloadjs-0.4.1.min.js"></script>
   <script src="js/vendor/easeljs-0.7.1.min.js"></script>
   <script src="js/vendor/tweenjs-0.5.1.min.js"></script>
   <script src="js/vendor/soundjs-0.5.2.min.js"></script>
   <script src="js/vendor/hammer.min.js"></script>
-  <script src="js/vendor/react.min.js"></script>
   <script src="js/vendor/tooltip.js"></script>
   <script src="js/vendor/popover.js"></script>
   <script src="js/vendor/modal.js"></script>
   <script src="js/haiku.js"></script>
   <script>
+  window.addEventListener("haiku_intro_completed", startHaiku);
+
+  function startHaiku(e){
+    window.removeEventListener("haiku_intro_completed", startHaiku);
+  }
+
+  var HaikuComponent = React.createFactory(Haiku);
+
+  React.render(
+    HaikuComponent(),
+    document.getElementById('wrapper')
+  );
+
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '805988352770010',

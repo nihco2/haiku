@@ -43,6 +43,9 @@
     "id": "lapin",
     "src": "assets/hiver/lapin.png"
   }, {
+    "id": "chouette",
+    "src": "assets/hiver/chouette.png"
+  }, {
     "id": "merle",
     "src": "assets/hiver/merle.png"
   }, {
@@ -88,6 +91,9 @@
   }, {
     "id": "tuto",
     "src": "assets/bg_tuto.jpg"
+  }, {
+    "id": "total_2",
+    "src": "assets/bg_desktop_2x.jpg"
   }, {
     "id": "keyboard",
     "src": "assets/keyboard_desktop.png"
@@ -199,6 +205,14 @@
     "destX": 800,
     "destY": 900,
     "delay": 40
+  }, {
+    "name": "chouette",
+    "season": "winter",
+    "posY": 1500,
+    "posX": 250,
+    "destX": 250,
+    "destY": 2000,
+    "delay": 0
   }, {
     "name": "merle",
     "season": "winter",
