@@ -81,11 +81,11 @@ header {
   margin-left: -160px;
 }
 .shadow{
-  -moz-box-shadow: 0px 0px 20px 2px #656565;
-  -webkit-box-shadow: 0px 0px 20px 2px #656565;
-  -o-box-shadow: 0px 0px 20px 2px #656565;
-  box-shadow: 0px 0px 20px 2px #656565;
-  filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=20);
+  -moz-box-shadow: 0px 0px 20px 2px #8b8b8b;
+  -webkit-box-shadow: 0px 0px 20px 2px #8b8b8b;
+  -o-box-shadow: 0px 0px 20px 2px #8b8b8b;
+  box-shadow: 0px 0px 20px 2px #8b8b8b;
+  filter:progid:DXImageTransform.Microsoft.Shadow(color=#8b8b8b, Direction=NaN, Strength=20);
 }
 .logo{
   background: url('../assets/homepage_logo.png') no-repeat center;
@@ -134,11 +134,6 @@ canvas{
   height: 0;
   overflow: hidden;
   z-index: 1;
-  -moz-box-shadow: 0px 0px 20px 5px #656565;
-  -webkit-box-shadow: 0px 0px 20px 5px #656565;
-  -o-box-shadow: 0px 0px 20px 5px #656565;
-  box-shadow: 0px 0px 20px 5px #656565;
-  filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=20);
   display: none;
 }
 .overflow{
@@ -175,15 +170,13 @@ canvas{
 .btn-start {
   background: url('../assets/btn_start.png') no-repeat;
   background-size:contain;
-  display: none;
+  display: block;
   width: 125px;
   height: 125px;
   margin: 0 auto;
-  position: absolute;
+  position: relative;
   top: 70%;
-  left:50%;
   margin-top: -50px;
-  margin-left: -60px;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   cursor: pointer;
 }

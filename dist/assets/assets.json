@@ -46,6 +46,9 @@
     "id": "chouette",
     "src": "assets/hiver/chouette.png"
   }, {
+    "id": "eyes",
+    "src": "assets/hiver/eyes.png"
+  }, {
     "id": "merle",
     "src": "assets/hiver/merle.png"
   }, {
@@ -91,9 +94,6 @@
   }, {
     "id": "tuto",
     "src": "assets/bg_tuto.jpg"
-  }, {
-    "id": "total_2",
-    "src": "assets/bg_desktop_2x.jpg"
   }, {
     "id": "keyboard",
     "src": "assets/keyboard_desktop.png"
@@ -152,10 +152,10 @@
     "name": "butterfly",
     "season": "summer",
     "type": "spritesheet",
-    "posY": 1450,
+    "posY": 1250,
     "posX": -50,
-    "destX": 700,
-    "destY": 850,
+    "destX": 500,
+    "destY": 800,
     "delay": 0
   }, {
     "name": "caille",
@@ -184,10 +184,10 @@
   }, {
     "name": "oiseau",
     "season": "autumn",
-    "posY": 4275,
+    "posY": 3820,
     "posX": -100,
     "destX": 50,
-    "destY": 4275,
+    "destY": 3820,
     "delay": 0
   }, {
     "name": "fish",
@@ -208,18 +208,26 @@
   }, {
     "name": "chouette",
     "season": "winter",
-    "posY": 1500,
-    "posX": 250,
-    "destX": 250,
-    "destY": 2000,
+    "posY": 1800,
+    "posX": 330,
+    "destX": 330,
+    "destY": 2200,
+    "delay": 0
+  }, {
+    "name": "eyes",
+    "season": "winter",
+    "posY": 3768,
+    "posX": 522,
+    "destX": 522,
+    "destY": 3768,
     "delay": 0
   }, {
     "name": "merle",
     "season": "winter",
-    "posY": 4100,
+    "posY": 4120,
     "posX": -30,
-    "destX": 50,
-    "destY": 4100,
+    "destX": 100,
+    "destY": 4050,
     "delay": 0
   }, {
     "name": "coccinelle",
@@ -265,7 +273,7 @@
     "typo": "30px Antic Slab",
     "color": "#5b78b7",
     "name": "haiku2",
-    "position": -230
+    "position": -220
   }, {
     "id": "gem3",
     "typo": "30px Antic Slab",
@@ -290,7 +298,7 @@
     "id": "desktop",
     "typo": "30px Antic Slab",
     "name": "tuto",
-    "color": "#5b78b7",
+    "color": "#ffffff",
     "position": 100
   }]
 }

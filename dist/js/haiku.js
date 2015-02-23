@@ -130,9 +130,12 @@ var Haiku = React.createClass({
         self.seasons.summer.addChild(tutoContainer);
         tutoContainer.y = self.seasons.summer.getBounds().height;
         if (!self.isMobile()) {
-          var desktop = new createjs.Bitmap(self.queue.getResult('keyboard'));
-          desktop.y = tutoContainer.getBounds().height - 500;
-          desktop.x = tutoContainer.getBounds().width / 2 - desktop.getBounds().width / 2;
+          var desktop = new createjs.Bitmap(self.queue.getResult('keyboard')),
+            ratio = 1.5;
+
+          desktop.scaleX = desktop.scaleY = ratio;
+          desktop.y = tutoContainer.getBounds().height / 2;
+          desktop.x = tutoContainer.getBounds().width / 2 - (desktop.getBounds().width / 2) * ratio;
           tutoContainer.addChild(desktop);
         } else {
           tutoContainer.addChild(fingersSprite);
@@ -390,7 +393,7 @@ var Haiku = React.createClass({
         tuto.addChild(txt);
       } else if (!self.isMobile() && item.id === 'desktop') {
         var tuto = self.seasons.summer.getChildByName('tuto');
-        txt.y = 1000;
+        txt.y = 900;
         txt.textAlign = 'center';
         tuto.addChild(txt);
       }
@@ -423,7 +426,7 @@ var Haiku = React.createClass({
       this.gameEnabled = false;
       return alert('Rien ne sert de courir petit scarabée !');
     }
-    console.log(this.container.y, -this.stage.canvas.height, this.isMobile())
+
     if (this.container.y >= this.scrollHeight && this.isMobile()) {
       Tween.get(this.container).to({
         y: this.container.y + this.num
@@ -434,8 +437,7 @@ var Haiku = React.createClass({
         Tween.get(this.container).to({
           y: 0
         }, 500, Ease.sineOut);
-        self.disablePan();
-        createjs.Sound.stop();
+        this.disablePan();
       } else {
         interval = setInterval(function() {
           self.moveAssets('up');
@@ -450,7 +452,7 @@ var Haiku = React.createClass({
     }
     //end game
     if (this.container.y >= -window.innerHeight / 2) {
-      this.scrollToTop();
+      this.scrollToTop(this.END_TOUCH_EVENT);
       this.disablePan();
     }
     this.walking();
@@ -499,7 +501,7 @@ var Haiku = React.createClass({
         if (self.container.y < -self.container.getBounds().height) {
           self.scrollToBottom();
         } else if (self.container.y > 0) {
-          self.scrollToTop();
+          self.scrollToTop(this.END_TOUCH_EVENT);
         }
         self.enablePan();
       });
@@ -555,12 +557,12 @@ var Haiku = React.createClass({
       self.gameEnabled = true;
     });
   },
-  scrollToTop: function() {
+  scrollToTop: function(time) {
     var self = this;
     self.disablePan();
     Tween.get(this.container).to({
       y: 0
-    }, self.END_TOUCH_EVENT, Ease.cubicOut).call(function() {
+    }, time, Ease.cubicOut).call(function() {
       self.enablePan();
     });
   },
@@ -568,6 +570,10 @@ var Haiku = React.createClass({
     var self = this;
 
     self.collection.forEach(function(item) {
+      if (item.name === 'hirondelle' && self.isOnScreen(item)) {
+        console.log('to top');
+        self.scrollToTop(2000);
+      }
       if (self.isOnScreen(item) && vertical === 'up') {
         if (item.posX > item.destX) {
           self.moveAssetToLeft(item, item.destX);
@@ -657,10 +663,10 @@ var Haiku = React.createClass({
     }
   },
   startFootstepsSound: function() {
-    this.soundInterval = setInterval(function() {
+    /*this.soundInterval = setInterval(function() {
       createjs.Sound.play('snd_footstep');
       this.enableFootSound = true;
-    }, 400);
+    }, 400);*/
   },
   stopFootstepsSound: function() {
     clearInterval(this.soundInterval);
@@ -821,6 +827,9 @@ var Haiku = React.createClass({
     self.stage = new createjs.Stage('haiku');
     createjs.Touch.enable(this.stage);
     createjs.Ticker.setFPS(24);
+    $('.js-btn-start').hide();
+    $('#wrapper').append($('aside'));
+    $('aside').append($('#final'));
 
     $.ajax({
       url: 'assets/assets.json',
@@ -848,8 +857,6 @@ var Haiku = React.createClass({
       $('body').removeClass('bkg-spring');
       $('.cb-slideshow li:not(.cb-slideshow li:nth-child(1)) span').css('opacity', 0);
     });
-    $('#wrapper').append($('aside'));
-    $('aside').append($('#final'));
 
     this.shareInit();
   },
@@ -871,7 +878,7 @@ var Haiku = React.createClass({
     if (!this.isMobile()) {
       $('body').addClass('desktop');
       $('header,aside').css('top', window.innerHeight / 2 - this.DESKTOP_HEIGHT / 2);
-      $('header').addClass('shadow')
+      $('header,#wrapper').addClass('shadow');
       //$('header,#wrapper').width((640 * window.innerHeight) / 1136);
     } else {
       $('body').addClass('mobile');
