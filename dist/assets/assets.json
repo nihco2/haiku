@@ -6,8 +6,17 @@
     "id": "patern",
     "src": "assets/season_patern.jpg"
   }, {
-    "id": "total",
-    "src": "assets/bg_total.jpg"
+    "id": "summer",
+    "src": "assets/ete/bg_ete.jpg"
+  }, {
+    "id": "autumn",
+    "src": "assets/automne/bg_automne.jpg"
+  }, {
+    "id": "winter",
+    "src": "assets/hiver/bg_hiver.jpg"
+  }, {
+    "id": "spring",
+    "src": "assets/printemps/bg_printemps.jpg"
   }, {
     "id": "tree",
     "src": "assets/ete/arbre_1.png"

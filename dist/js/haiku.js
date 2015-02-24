@@ -99,25 +99,25 @@ var Haiku = React.createClass({
       finalContainer = new createjs.Container(),
       finalBitmap = new createjs.Bitmap(this.queue.getResult('end')),
       patern = new createjs.Bitmap(this.queue.getResult('patern')),
-      totalBmp = new createjs.Bitmap(this.queue.getResult('total')),
+      //totalBmp = new createjs.Bitmap(this.queue.getResult('total')),
       self = this;
 
-    totalBmp.name = 'total';
+    //totalBmp.name = 'total';
     finalContainer.addChild(finalBitmap);
     finalContainer.name = 'final';
     self.container.addChild(finalContainer);
     fingersSprite.name = 'fingersSprite';
-    seasons[0] = patern.clone(),
+    seasons[0] = new createjs.Bitmap(this.queue.getResult('spring')),
     seasons[0]['name'] = 'spring';
-    seasons[1] = patern.clone(),
+    seasons[1] = new createjs.Bitmap(this.queue.getResult('winter')),
     seasons[1]['name'] = 'winter',
-    seasons[2] = patern.clone(),
+    seasons[2] = new createjs.Bitmap(this.queue.getResult('autumn')),
     seasons[2]['name'] = 'autumn',
-    seasons[3] = patern.clone(),
+    seasons[3] = new createjs.Bitmap(this.queue.getResult('summer')),
     seasons[3]['name'] = 'summer';
     seasons.forEach(function(season, index) {
       var bitmapContainer = new createjs.Container();
-      season.alpha = 0;
+      //season.alpha = 0;
       bitmapContainer.name = season.name;
       bitmapContainer.addChild(season);
       self.container.addChild(bitmapContainer);
@@ -141,7 +141,7 @@ var Haiku = React.createClass({
           tutoContainer.addChild(fingersSprite);
         }
         tutoHeight = tutoContainer.getBounds().height;
-        totalBmp.y = tutoHeight;
+        //totalBmp.y = tutoHeight;
       } else if (season.name === 'autumn') {
         self.seasons[season.name].particlesNumber = self.PARTICLES_NUMBER_AUTUMN;
         self.seasons[season.name].particleEnabled = true;
@@ -155,8 +155,8 @@ var Haiku = React.createClass({
     if (navigator.userAgent.match(/iPad;.*CPU.*OS 7_\d/i)) {
       //totalBmp = new createjs.Bitmap(this.queue.getResult('total_2')),
     };
-    self.container.addChild(totalBmp);
-    this.container.swapChildren(totalBmp, this.container.getChildByName('spring'));
+    //self.container.addChild(totalBmp);
+    //this.container.swapChildren(totalBmp, this.container.getChildByName('spring'));
     self.stage.addChild(this.container);
   },
   initSize: function() {
@@ -571,8 +571,11 @@ var Haiku = React.createClass({
 
     self.collection.forEach(function(item) {
       if (item.name === 'hirondelle' && self.isOnScreen(item)) {
-        console.log('to top');
-        self.scrollToTop(2000);
+        $('body').removeClass('bkg-spring');
+        self.scrollToTop(4000);
+        self.fadeOutSound(self.currentSound);
+        $('.bg_spring').fadeTo(4000, 0);
+        self.disablePan();
       }
       if (self.isOnScreen(item) && vertical === 'up') {
         if (item.posX > item.destX) {
@@ -854,7 +857,6 @@ var Haiku = React.createClass({
     $('.restart').on('click', function() {
       self.reset();
       $('#wrapper').removeClass('overflow');
-      $('body').removeClass('bkg-spring');
       $('.cb-slideshow li:not(.cb-slideshow li:nth-child(1)) span').css('opacity', 0);
     });
 
