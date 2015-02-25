@@ -534,6 +534,7 @@ var Haiku = React.createClass({
       }
     } else if (this.checkSeason(this.seasons.summer)) {
       this.currentSeason = 'summer';
+      this.previousSeason = 'spring';
       if (this.checkCanvasBkg(this.seasons.autumn)) {
         if (!$('body').hasClass('bkg-canvas-autumn')) {
           $('body').addClass('bkg-canvas-autumn');
