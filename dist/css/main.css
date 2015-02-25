@@ -9,20 +9,33 @@ html, body {
   height: 100%;
   background: #ece0e0;
 }
-body{
-  
+canvas{
+  background:url('../assets/sep_summer.jpg') repeat-y;
+  background-size:contain;
 }
 .bkg-autumn{
   background:url('../assets/bg_desktop_2.jpg') no-repeat;
   background-size:cover;
 }
+.bkg-canvas-autumn canvas{
+  background:url('../assets/sep_autumn.jpg') repeat-y;
+  background-size:contain;
+}
 .bkg-winter{
   background:url('../assets/bg_desktop_3.jpg') no-repeat;
   background-size:cover;
 }
+.bkg-canvas-winter canvas{
+  background:url('../assets/sep_winter.jpg') repeat-y;
+  background-size:contain;
+}
 .bkg-spring{
   background:url('../assets/bg_desktop_4.jpg') no-repeat;
   background-size:cover;
+}
+.bkg-canvas-spring canvas{
+  background:url('../assets/sep_spring.jpg') repeat-y;
+  background-size:contain;
 }
 ::-moz-selection {
   background: #b3d4fc;
@@ -31,7 +44,7 @@ body{
 
 ::selection {
   background: #b3d4fc;
-  text-shadow: none;
+  text-shadow: none
 }
 hr {
   display: block;
@@ -161,7 +174,7 @@ canvas{
   width: 125px;
   height: 125px;
   margin-top: -50px;
-  margin-left: -44px;
+  margin-left: -46px;
   background: url('../assets/loading_circle.png');
   background-size:contain;
   animation: rotating 2s linear infinite;

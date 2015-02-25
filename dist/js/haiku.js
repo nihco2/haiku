@@ -61,6 +61,9 @@ var Haiku = React.createClass({
   checkSeason: function(season) {
     return (this.container.y >= -(season.y + season.getBounds().height) && this.container.y <= -season.y);
   },
+  checkCanvasBkg: function(season) {
+    return (this.container.y >= -(season.y + season.getBounds().height + season.getBounds().height / 2) && this.container.y <= -season.y);
+  },
   preloadAssets: function(manifest, sounds) {
     var self = this;
     createjs.Sound.alternateExtensions = ["mp3"];
@@ -75,6 +78,9 @@ var Haiku = React.createClass({
   },
   handleProgress: function(event) {
     var loaded = Math.round(event.loaded * 100) + '%';
+    if (event.loaded * 100 <= 9) {
+      loaded = String('0' + Math.round(event.loaded * 100) + '%');
+    }
     $('.loader').text(loaded);
   },
   handleComplete: function() {
@@ -99,10 +105,8 @@ var Haiku = React.createClass({
       finalContainer = new createjs.Container(),
       finalBitmap = new createjs.Bitmap(this.queue.getResult('end')),
       patern = new createjs.Bitmap(this.queue.getResult('patern')),
-      //totalBmp = new createjs.Bitmap(this.queue.getResult('total')),
       self = this;
 
-    //totalBmp.name = 'total';
     finalContainer.addChild(finalBitmap);
     finalContainer.name = 'final';
     self.container.addChild(finalContainer);
@@ -117,6 +121,7 @@ var Haiku = React.createClass({
     seasons[3]['name'] = 'summer';
     seasons.forEach(function(season, index) {
       var bitmapContainer = new createjs.Container();
+
       //season.alpha = 0;
       bitmapContainer.name = season.name;
       bitmapContainer.addChild(season);
@@ -140,8 +145,6 @@ var Haiku = React.createClass({
         } else {
           tutoContainer.addChild(fingersSprite);
         }
-        tutoHeight = tutoContainer.getBounds().height;
-        //totalBmp.y = tutoHeight;
       } else if (season.name === 'autumn') {
         self.seasons[season.name].particlesNumber = self.PARTICLES_NUMBER_AUTUMN;
         self.seasons[season.name].particleEnabled = true;
@@ -152,11 +155,7 @@ var Haiku = React.createClass({
 
       (index > 0) ? bitmapContainer.y = self.container.getBounds().height - 2 : bitmapContainer.y = finalContainer.getBounds().height;
     });
-    if (navigator.userAgent.match(/iPad;.*CPU.*OS 7_\d/i)) {
-      //totalBmp = new createjs.Bitmap(this.queue.getResult('total_2')),
-    };
-    //self.container.addChild(totalBmp);
-    //this.container.swapChildren(totalBmp, this.container.getChildByName('spring'));
+
     self.stage.addChild(this.container);
   },
   initSize: function() {
@@ -264,7 +263,7 @@ var Haiku = React.createClass({
       }
     }, 200);
   },
-  fadeOutSound: function(instance) {
+  fadeOutSound: function(instance, time) {
     var self = this;
     var interval = setInterval(function() {
       if (instance.getVolume() > 0) {
@@ -273,7 +272,7 @@ var Haiku = React.createClass({
         self.currentSound = self.nextSound;
         clearInterval(interval);
       }
-    }, 200);
+    }, time);
   },
   initListeners: function() {
     var self = this,
@@ -309,7 +308,7 @@ var Haiku = React.createClass({
             if (left && self.container.y < -self.scrollHeight && self.gameEnabled) {
               left = false;
               self.handlePanDown({
-                distance: self.stage.canvas.height / 2,
+                distance: self.stage.canvas.height / 4,
                 deltaTime: 0
               });
             }
@@ -320,7 +319,7 @@ var Haiku = React.createClass({
             if (!left && self.container.y < -self.scrollHeight && self.gameEnabled) {
               left = true;
               self.handlePanDown({
-                distance: self.stage.canvas.height / 2,
+                distance: self.stage.canvas.height / 4,
                 deltaTime: 0
               });
             }
@@ -518,6 +517,11 @@ var Haiku = React.createClass({
         $('.bg_winter').fadeTo(5000, 1);
         this.soundTransition('snd_winter');
       }
+      if (this.checkCanvasBkg(this.seasons.spring)) {
+        if (!$('body').hasClass('bkg-canvas-spring')) {
+          $('body').addClass('bkg-canvas-spring').removeClass('bkg-canvas-winter');
+        }
+      }
     } else if (this.checkSeason(this.seasons.spring)) {
       this.currentSeason = 'spring';
       this.previousSeason = 'winter';
@@ -530,6 +534,11 @@ var Haiku = React.createClass({
       }
     } else if (this.checkSeason(this.seasons.summer)) {
       this.currentSeason = 'summer';
+      if (this.checkCanvasBkg(this.seasons.autumn)) {
+        if (!$('body').hasClass('bkg-canvas-autumn')) {
+          $('body').addClass('bkg-canvas-autumn');
+        }
+      }
     } else if (this.checkSeason(this.seasons.autumn)) {
       this.currentSeason = 'autumn';
       this.previousSeason = 'summer';
@@ -538,6 +547,11 @@ var Haiku = React.createClass({
         $('.bg_autumn').fadeTo(5000, 1);
         this.soundTransition('snd_autumn');
       }
+      if (this.checkCanvasBkg(this.seasons.winter)) {
+        if (!$('body').hasClass('bkg-canvas-winter')) {
+          $('body').addClass('bkg-canvas-winter').removeClass('bkg-canvas-autumn');
+        }
+      }
     }
   },
   soundTransition: function(season) {
@@ -545,7 +559,7 @@ var Haiku = React.createClass({
       loop: -1
     });
     this.nextSound.setVolume(0);
-    this.fadeOutSound(this.currentSound);
+    this.fadeOutSound(this.currentSound, 200);
     this.fadeInSound(this.nextSound);
   },
   scrollToBottom: function() {
@@ -573,7 +587,7 @@ var Haiku = React.createClass({
       if (item.name === 'hirondelle' && self.isOnScreen(item)) {
         $('body').removeClass('bkg-spring');
         self.scrollToTop(4000);
-        self.fadeOutSound(self.currentSound);
+        self.fadeOutSound(self.currentSound, 5000);
         $('.bg_spring').fadeTo(4000, 0);
         self.disablePan();
       }
