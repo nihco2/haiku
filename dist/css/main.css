@@ -272,6 +272,7 @@ nav{
   color:white;
   font-family: 'Amatic SC';
   font-size: 20px;
+  cursor: pointer;
 }
 
 .modal-content,#warning{
@@ -392,9 +393,15 @@ nav li,.social-share li{
   text-align: center;
   font-family: 'Amatic SC';
   text-transform: uppercase;
-  font-size: 30px;
-  display: none;
+  font-size: 20px;
+  margin-top: 0;
 }
+
+#gems .season-share.activate{
+  display: none;
+  font-size: 30px;
+}
+
 #gems .content .social-share{
   position: absolute;
   right: 10px;

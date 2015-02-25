@@ -736,7 +736,8 @@ var Haiku = React.createClass({
     var self = this;
     var collect = function(event) {
       var soc = $('#' + event.target.id).find('.content');
-      $('.season-share').show();
+      $('.season-share').hide();
+      $('.season-share.activate').show();
       createjs.Sound.play('gem_grab');
       $('#' + event.target.id).addClass(event.target.id).addClass('gemEnabled');
       Tween.get(event.target).to({
