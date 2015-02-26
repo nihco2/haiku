@@ -20,6 +20,7 @@ var Haiku = React.createClass({
   nextSound: null,
   enableFootSound: true,
   soundInterval: null,
+  endGame: false,
   MAX_VOLUME: 0.02,
   SCROLL_VELOCITY: 300,
   ASSET_MOVEMENT: 5,
@@ -538,6 +539,7 @@ var Haiku = React.createClass({
       if (this.checkCanvasBkg(this.seasons.autumn)) {
         if (!$('body').hasClass('bkg-canvas-autumn')) {
           $('body').addClass('bkg-canvas-autumn');
+          $('body').removeClass('bkg-canvas-summer');
         }
       }
     } else if (this.checkSeason(this.seasons.autumn)) {
@@ -586,11 +588,14 @@ var Haiku = React.createClass({
 
     self.collection.forEach(function(item) {
       if (item.name === 'hirondelle' && self.isOnScreen(item)) {
-        $('body').removeClass('bkg-spring');
-        self.scrollToTop(4000);
-        self.fadeOutSound(self.currentSound, 5000);
-        $('.bg_spring').fadeTo(4000, 0);
-        self.disablePan();
+        if (!self.endGame) {
+          $('body').removeClass('bkg-spring');
+          self.scrollToTop(4000);
+          self.fadeOutSound(self.currentSound, 5000);
+          $('.bg_spring,.bg_winter,.bg_autumn').fadeTo(4000, 0);
+          self.disablePan();
+          self.endGame = true;
+        }
       }
       if (self.isOnScreen(item) && vertical === 'up') {
         if (item.posX > item.destX) {
@@ -821,13 +826,13 @@ var Haiku = React.createClass({
   reset: function() {
     var self = this,
       item;
-    this.scrollToBottom();
-    this.soundTransition('snd_summer');
+    self.scrollToBottom();
+    self.soundTransition('snd_summer');
     self.collection.forEach(function(item, index) {
       item.y = item.posY;
       item.x = item.posX;
     });
-
+    self.endGame = false;
     for (var season in this.seasons) {
       if (this.seasons[season].particles) {
         for (var i = 0; i < this.seasons[season].particles.length; i++) {
@@ -872,6 +877,8 @@ var Haiku = React.createClass({
 
     $('.restart').on('click', function() {
       self.reset();
+      $('.bg_spring,.bg_winter,.bg_autumn').fadeTo(4000, 0);
+      $('body').addClass('bkg-canvas-summer').removeClass('bkg-canvas-spring').removeClass('bkg-spring');
       $('#wrapper').removeClass('overflow');
       $('.cb-slideshow li:not(.cb-slideshow li:nth-child(1)) span').css('opacity', 0);
     });
