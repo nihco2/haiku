@@ -136,13 +136,26 @@ var Haiku = React.createClass({
         self.seasons.summer.addChild(tutoContainer);
         tutoContainer.y = self.seasons.summer.getBounds().height;
         if (!self.isMobile()) {
-          var desktop = new createjs.Bitmap(self.queue.getResult('keyboard')),
-            ratio = 1.5;
-
-          desktop.scaleX = desktop.scaleY = ratio;
-          desktop.y = tutoContainer.getBounds().height / 2;
-          desktop.x = tutoContainer.getBounds().width / 2 - (desktop.getBounds().width / 2) * ratio;
-          tutoContainer.addChild(desktop);
+          var keyboardContainer = new createjs.Container();
+          var keyboard1 = new createjs.Bitmap(self.queue.getResult('keyboard2')),
+            keyboard2 = new createjs.Bitmap(self.queue.getResult('keyboard1')),
+            ratio = 2;
+          keyboardContainer.addChild(keyboard1);
+          keyboardContainer.addChild(keyboard2);
+          keyboardContainer.scaleX = keyboardContainer.scaleY = ratio;
+          keyboardContainer.y = tutoContainer.getBounds().height / 2;
+          keyboardContainer.x = tutoContainer.getBounds().width / 2 - (keyboardContainer.getBounds().width / 2) * ratio;
+          tutoContainer.addChild(keyboardContainer);
+          tutoContainer.addEventListener('tick', function(tick) {
+            var timestamp = Math.round(tick.timeStamp / 1000);
+            if (Math.round(tick.timeStamp / 1000) % 2 === 0) {
+              keyboard1.visible = false;
+              keyboard2.visible = true;
+            } else {
+              keyboard1.visible = true;
+              keyboard2.visible = false;
+            }
+          });
         } else {
           tutoContainer.addChild(fingersSprite);
         }
@@ -508,51 +521,67 @@ var Haiku = React.createClass({
     }
   },
   setCurrentSeason: function() {
-    if (this.checkSeason(this.seasons.winter)) {
-      this.currentSeason = 'winter';
-      this.previousSeason = 'autumn';
+    var self = this,
+      eyesInterval;
+
+    if (self.checkSeason(this.seasons.winter)) {
+      self.currentSeason = 'winter';
+      self.previousSeason = 'autumn';
 
       if (!$('body').hasClass('bkg-winter')) {
         $('body').removeClass('bkg-autumn');
         $('body').addClass('bkg-winter');
         $('.bg_winter').fadeTo(5000, 1);
-        this.soundTransition('snd_winter');
+        self.soundTransition('snd_winter');
+        var eyes = false;
+        eyesInterval = setInterval(function() {
+          if (!eyes) {
+            self.seasons.winter.getChildByName('eyes').alpha = 1;
+            eyes = true;
+          } else {
+            self.seasons.winter.getChildByName('eyes').alpha = 0;
+            eyes = false;
+          }
+        }, 1400);
       }
-      if (this.checkCanvasBkg(this.seasons.spring)) {
+      if (self.checkCanvasBkg(self.seasons.spring)) {
         if (!$('body').hasClass('bkg-canvas-spring')) {
           $('body').addClass('bkg-canvas-spring').removeClass('bkg-canvas-winter');
         }
       }
-    } else if (this.checkSeason(this.seasons.spring)) {
-      this.currentSeason = 'spring';
-      this.previousSeason = 'winter';
+    } else {
+      clearInterval(eyesInterval);
+      if (self.checkSeason(self.seasons.spring)) {
+        self.currentSeason = 'spring';
+        self.previousSeason = 'winter';
 
-      if (!$('body').hasClass('bkg-spring')) {
-        $('body').removeClass('bkg-winter');
-        $('body').addClass('bkg-spring');
-        $('.bg_spring').fadeTo(5000, 1);
-        this.soundTransition('snd_spring');
-      }
-    } else if (this.checkSeason(this.seasons.summer)) {
-      this.currentSeason = 'summer';
-      this.previousSeason = 'spring';
-      if (this.checkCanvasBkg(this.seasons.autumn)) {
-        if (!$('body').hasClass('bkg-canvas-autumn')) {
-          $('body').addClass('bkg-canvas-autumn');
-          $('body').removeClass('bkg-canvas-summer');
+        if (!$('body').hasClass('bkg-spring')) {
+          $('body').removeClass('bkg-winter');
+          $('body').addClass('bkg-spring');
+          $('.bg_spring').fadeTo(5000, 1);
+          self.soundTransition('snd_spring');
         }
-      }
-    } else if (this.checkSeason(this.seasons.autumn)) {
-      this.currentSeason = 'autumn';
-      this.previousSeason = 'summer';
-      if (!$('body').hasClass('bkg-autumn')) {
-        $('body').addClass('bkg-autumn');
-        $('.bg_autumn').fadeTo(5000, 1);
-        this.soundTransition('snd_autumn');
-      }
-      if (this.checkCanvasBkg(this.seasons.winter)) {
-        if (!$('body').hasClass('bkg-canvas-winter')) {
-          $('body').addClass('bkg-canvas-winter').removeClass('bkg-canvas-autumn');
+      } else if (self.checkSeason(self.seasons.summer)) {
+        self.currentSeason = 'summer';
+        self.previousSeason = 'spring';
+        if (self.checkCanvasBkg(this.seasons.autumn)) {
+          if (!$('body').hasClass('bkg-canvas-autumn')) {
+            $('body').addClass('bkg-canvas-autumn');
+            $('body').removeClass('bkg-canvas-summer');
+          }
+        }
+      } else if (self.checkSeason(self.seasons.autumn)) {
+        self.currentSeason = 'autumn';
+        self.previousSeason = 'summer';
+        if (!$('body').hasClass('bkg-autumn')) {
+          $('body').addClass('bkg-autumn');
+          $('.bg_autumn').fadeTo(5000, 1);
+          self.soundTransition('snd_autumn');
+        }
+        if (self.checkCanvasBkg(self.seasons.winter)) {
+          if (!$('body').hasClass('bkg-canvas-winter')) {
+            $('body').addClass('bkg-canvas-winter').removeClass('bkg-canvas-autumn');
+          }
         }
       }
     }
@@ -746,8 +775,13 @@ var Haiku = React.createClass({
       createjs.Sound.play('gem_grab');
       $('#' + event.target.id).addClass(event.target.id).addClass('gemEnabled');
       Tween.get(event.target).to({
-        alpha: 0
-      }, 500, Ease.cubicOut);
+        y: this.y + window.innerHeight,
+        x: this.x + self.stage.canvas.width / 2,
+        scaleY: 0.5,
+        scaleX: 0.5
+      }, 2000, Ease.bounceOut).call(function() {
+        this.visible = false;
+      });
       $('#' + event.target.id).popover({
         html: true,
         container: '.center',
@@ -868,7 +902,7 @@ var Haiku = React.createClass({
       },
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
-        location.reload();
+        //location.reload();
       }.bind(this)
     });
     $('.cross').on('click', function() {

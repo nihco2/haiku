@@ -394,7 +394,7 @@ nav li,.social-share li{
   font-family: 'Amatic SC';
   text-transform: uppercase;
   font-size: 20px;
-  margin-top: 0;
+  margin: 0;
 }
 
 #gems .season-share.activate{

@@ -34,6 +34,9 @@
     "src": "assets/ete/butterfly.json",
     "type": "spritesheet"
   }, {
+    "id": "eyes",
+    "src": "assets/hiver/eyes.png"
+  }, {
     "id": "mountain",
     "src": "assets/montagne.png"
   }, {
@@ -54,9 +57,6 @@
   }, {
     "id": "chouette",
     "src": "assets/hiver/chouette.png"
-  }, {
-    "id": "eyes",
-    "src": "assets/hiver/eyes.png"
   }, {
     "id": "merle",
     "src": "assets/hiver/merle.png"
@@ -104,8 +104,11 @@
     "id": "tuto",
     "src": "assets/bg_tuto.jpg"
   }, {
-    "id": "keyboard",
-    "src": "assets/keyboard_desktop.png"
+    "id": "keyboard1",
+    "src": "assets/tuto/keyboard_1.png"
+  }, {
+    "id": "keyboard2",
+    "src": "assets/tuto/keyboard_2.png"
   }, {
     "id": "gem_grab",
     "src": "assets/sounds/gem_grab.mp3"
