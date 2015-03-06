@@ -616,10 +616,10 @@ var Haiku = React.createClass({
     var self = this;
 
     self.collection.forEach(function(item) {
-      if (item.name === 'hirondelle' && self.isOnScreen(item)) {
+      if (item.name === 'blank' && self.isOnScreen(item)) {
         if (!self.endGame) {
           $('body').removeClass('bkg-spring');
-          self.scrollToTop(4000);
+          self.scrollToTop(5000);
           self.fadeOutSound(self.currentSound, 5000);
           $('.bg_spring,.bg_winter,.bg_autumn').fadeTo(4000, 0);
           self.disablePan();
@@ -777,9 +777,9 @@ var Haiku = React.createClass({
       Tween.get(event.target).to({
         y: this.y + window.innerHeight,
         x: this.x + self.stage.canvas.width / 2,
-        scaleY: 0.5,
-        scaleX: 0.5
-      }, 2000, Ease.bounceOut).call(function() {
+        scaleY: 0,
+        scaleX: 0
+      }, 2000, Ease.cubicOut).call(function() {
         this.visible = false;
       });
       $('#' + event.target.id).popover({

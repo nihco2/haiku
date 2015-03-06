@@ -104,6 +104,9 @@
     "id": "tuto",
     "src": "assets/bg_tuto.jpg"
   }, {
+    "id": "blank",
+    "src": "assets/blank.png"
+  }, {
     "id": "keyboard1",
     "src": "assets/tuto/keyboard_1.png"
   }, {
@@ -229,8 +232,8 @@
     "name": "eyes",
     "season": "winter",
     "posY": 3768,
-    "posX": 522,
-    "destX": 522,
+    "posX": 521,
+    "destX": 521,
     "destY": 3768,
     "delay": 0
   }, {
@@ -258,6 +261,14 @@
     "destY": 500,
     "delay": 0
   }, {
+    "name": "blank",
+    "season": "spring",
+    "posY": 0,
+    "posX": 0,
+    "destX": 0,
+    "destY": 0,
+    "delay": 0
+  }, {
     "name": "hirondelles_fil",
     "season": "spring",
     "posY": 1500,
@@ -269,7 +280,7 @@
     "name": "poissons2",
     "season": "spring",
     "posY": 4540,
-    "posX": -250,
+    "posX": -200,
     "destX": 200,
     "destY": 4540,
     "delay": 0
