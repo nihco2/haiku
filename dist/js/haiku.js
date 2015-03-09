@@ -812,7 +812,7 @@ var Haiku = React.createClass({
       $(document).mouseup(function(e) {
         var popocontainer = jQuery(".popover");
         if (popocontainer.has(e.target).length === 0) {
-          jQuery('.popover').toggleClass('in').remove();
+          jQuery('.popover').toggleClass('in').detach();
         }
       });
     }

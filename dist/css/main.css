@@ -93,6 +93,10 @@ header {
   left: 50%;
   margin-left: -160px;
 }
+
+.desktop .credits,.desktop .credits2{
+  display: none;
+}
 .shadow{
   -moz-box-shadow: 0px 0px 20px 2px #8b8b8b;
   -webkit-box-shadow: 0px 0px 20px 2px #8b8b8b;
@@ -274,7 +278,9 @@ nav{
   font-size: 20px;
   cursor: pointer;
 }
-
+.modal-content{
+  box-shadow: none !important;
+}
 .modal-content,#warning{
   text-align: center;
   color:#a48652;
