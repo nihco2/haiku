@@ -127,27 +127,8 @@
   }, {
     "id": "snd_spring",
     "src": "assets/sounds/snd_spring.mp3"
-  }, {
-    "id": "snd_footstep",
-    "src": "assets/sounds/footstep.ogg"
   }],
   "animations": [{
-    "name": "mountain1",
-    "season": "winter",
-    "posX": 500,
-    "posY": 920,
-    "destX": 400,
-    "destY": 920,
-    "delay": 0
-  }, {
-    "name": "mountain2",
-    "season": "winter",
-    "posX": -400,
-    "posY": 1050,
-    "destX": -200,
-    "destY": 1050,
-    "delay": 0
-  }, {
     "name": "sauterelle",
     "season": "summer",
     "posY": 2020,
@@ -255,10 +236,10 @@
   }, {
     "name": "hirondelle",
     "season": "spring",
-    "posY": 0,
+    "posY": 550,
     "posX": -100,
-    "destX": 640,
-    "destY": 500,
+    "destX": 750,
+    "destY": 1200,
     "delay": 0
   }, {
     "name": "blank",
@@ -271,10 +252,10 @@
   }, {
     "name": "hirondelles_fil",
     "season": "spring",
-    "posY": 1500,
+    "posY": 1600,
     "posX": 0,
     "destX": 0,
-    "destY": 2000,
+    "destY": 2100,
     "delay": 0
   }, {
     "name": "poissons2",
@@ -308,7 +289,7 @@
     "typo": "30px Antic Slab",
     "color": "#5b78b7",
     "name": "haiku4",
-    "position": -130
+    "position": -150
   }, {
     "text": "Posez votre téléphone ou tablette sur une surface plane et utilisez vos deux doigts\npour marcher sur l'écran et démarrer\nvotre voyage...",
     "id": "tuto",
